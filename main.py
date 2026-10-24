@@ -5,7 +5,7 @@ import asyncpg
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
-
+from fastapi.middleware.cors import CORSMiddleware
 
 class ChatRequest(BaseModel):
     message: str
@@ -28,7 +28,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/health")
 async def health():
