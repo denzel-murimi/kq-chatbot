@@ -29,11 +29,7 @@ pool: asyncpg.Pool | None = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global pool
-    pool = await asyncpg.create_pool(
-        os.environ["DATABASE_URL"],
-        min_size=1,
-        max_size=5,
-    )
+    pool = await asyncpg.create_pool(os.environ["DATABASE_URL"], min_size=1, max_size=5, statement_cache_size=0)
     yield
     await pool.close()
 
