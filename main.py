@@ -1,8 +1,9 @@
 import os
+import uuid
 from contextlib import asynccontextmanager
 import asyncio
 from app.router import classify
-
+from app.slot_filling import handle_transactional
 import asyncpg
 from dotenv import load_dotenv
 from fastapi import FastAPI
@@ -19,6 +20,7 @@ class ChatResponse(BaseModel):
     reply: str
     route: str
     score: float
+    session_id: str
 
 
 load_dotenv()
@@ -70,13 +72,15 @@ async def chat(req: ChatRequest):
     )
 
     route = result["route"]
+    session_id = req.session_id or str(uuid.uuid4())
 
     if route == "transactional":
-        reply = (
-            "This looks like a request about your booking. "
-            "The transactional assistant that handles this "
-            "is coming in a later sprint."
+        tx_result = await handle_transactional(
+            pool,
+            session_id,
+            req.message,
         )
+        reply = tx_result["reply"]
     else:
         reply = (
             "This looks like a policy question. "
@@ -88,4 +92,5 @@ async def chat(req: ChatRequest):
         reply=reply,
         route=route,
         score=round(result["score"], 3),
+        session_id=session_id,
     )

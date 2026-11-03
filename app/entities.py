@@ -1,14 +1,8 @@
 """
-Entity extraction for the transactional pipeline (Issue #8).
-
-Hybrid approach:
-  - Regex for the clearly-shaped fields: PNR (6 alphanumeric with a digit),
-    seat (e.g. 14C) and flight number (KQ + digits). These are deterministic,
-    instant and fully explainable.
-  - A constrained Groq call for the free-text surname, which has no fixed shape.
-
-The language model is used ONLY to read a value out of the text. It never
-decides what to do with a booking — that is the state machine's job (Issue #9).
+Entity extraction for the transactional pipeline (Issue #8), hybrid approach.
+Regex for clearly-shaped fields (PNR, seat, flight); a constrained Groq call for
+the free-text surname. The language model only READS a value; it never decides
+what to do with a booking.
 """
 from __future__ import annotations
 
@@ -30,22 +24,17 @@ def extract_structured(message: str) -> dict:
     slots: dict[str, str] = {}
     upper = message.upper()
 
-    # Flight number first (so a flight like KQ1000 is not mistaken for a PNR).
     flight = _FLIGHT_RE.search(message)
     if flight:
         slots["flight_number"] = "KQ " + flight.group(1)
 
-    # PNR: a 6-character alphanumeric token containing at least one digit. The
-    # digit requirement avoids matching plain six-letter words (LONDON, ECONOMY
-    # is 7 so already excluded), and KQ-flight tokens are skipped explicitly.
     for tok in _PNR_RE.findall(upper):
         if tok.startswith("KQ") and tok[2:].isdigit():
-            continue  # that's a flight number, not a PNR
+            continue  # flight number, not a PNR
         if any(ch.isdigit() for ch in tok):
             slots["pnr"] = tok
             break
 
-    # Seat: one or two digits then a cabin letter (14C).
     seat = _SEAT_RE.search(message)
     if seat:
         slots["seat_number"] = seat.group(1).upper()
@@ -59,15 +48,18 @@ def _client() -> Groq:
 
 
 def extract_surname(message: str) -> str | None:
-    """Ask the model to read out the passenger surname, if present. Returns the
-    surname or None. Extraction only — the model makes no decisions."""
+    """Read out the passenger surname used to look up a booking, if present.
+    Extraction only — the model makes no decisions."""
     resp = _client().chat.completions.create(
         model=GROQ_MODEL,
         messages=[
             {"role": "system", "content":
-                "You extract the passenger's surname (last name) from the message. "
-                "Reply with ONLY the surname as a single word and nothing else. "
-                "If no surname is present, reply exactly: NONE"},
+                "You extract the passenger's last name (surname) from the message, "
+                "used to look up their booking. The name may be introduced by words "
+                "like 'surname', 'last name' or 'name is', or given on its own. If a "
+                "full name is given, return only the last word. Reply with ONLY the "
+                "name as a single word, or exactly NONE if the message contains no "
+                "personal name."},
             {"role": "user", "content": message},
         ],
         temperature=0.0,
