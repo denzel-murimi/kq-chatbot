@@ -2,8 +2,10 @@
 Semantic router (Issue #4) — Google Gemini embeddings.
 
 Classifies an incoming passenger message as 'informational' (answerable from
-policy documents, handled later by the RAG pipeline) or 'transactional' (an
-action on a booking, handled later by the slot-filling engine).
+policy documents, handled by the RAG pipeline), 'transactional' (an action on a
+booking, handled by the slot-filling engine) or 'out_of_scope' (unrelated to
+Kenya Airways travel, answered with a fixed message saying what the assistant
+can help with).
 
 How it works, in one sentence: embed the message, measure cosine similarity to
 a small set of labelled example phrases, and pick the closer class. No trained
@@ -47,6 +49,19 @@ EXAMPLES: dict[str, list[str]] = {
         "Cancel my booking please.",
         "Move me to a window seat.",
         "Is my flight KQ100 on time today?",
+    ],
+    # Off-domain requests. Without this class every message had to be either
+    # informational or transactional, so "What is the weather like in Paris?"
+    # was sent down the booking path (0.72 transactional vs 0.70 informational).
+    # Keep these clearly unrelated to travel so they never compete with real
+    # policy or booking questions.
+    "out_of_scope": [
+        "What's the weather forecast for this weekend?",
+        "What is the capital of France?",
+        "Tell me a joke.",
+        "Who won the match last night?",
+        "Can you help with my homework?",
+        "What time is it right now?",
     ],
 }
 
@@ -108,7 +123,7 @@ def _cosine(a: list[float], b: list[float]) -> float:
 def classify(message: str) -> dict:
     """
     Returns a dict:
-      route    -> 'informational' | 'transactional'
+      route    -> 'informational' | 'transactional' | 'out_of_scope'
       score    -> best cosine similarity (0..1)
       margin   -> gap to the runner-up class (how confident the pick is)
       scores   -> per-class best similarity, for logging/debugging

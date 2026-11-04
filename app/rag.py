@@ -12,7 +12,7 @@ Flow for an informational question:
      answer-only-from-context instruction, and return the grounded answer with
      its sources.
 
-Answer generation runs on Groq (Llama) rather than Gemini. Gemini's free tier
+Answer generation runs on Groq rather than Gemini. Gemini's free tier
 caps generation at ~20 requests/day, which cannot support iterative testing or
 the planned user-acceptance testing; Groq's free tier is far larger and needs no
 billing. Embeddings remain on Gemini, so the vector schema and retrieval are
@@ -39,7 +39,10 @@ from groq import Groq
 
 from app.retrieval import retrieve
 
-GENERATION_MODEL = os.getenv("GROQ_MODEL", "llama-3.1-8b-instant")
+# Same default as app/entities.py. The old default (llama-3.1-8b-instant) is no
+# longer served by Groq, so any process that imported this module before loading
+# .env silently got "service busy" for every grounded answer.
+GENERATION_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 SIMILARITY_THRESHOLD = float(os.getenv("RAG_SIMILARITY_THRESHOLD", "0.6"))
 
 _MAX_ATTEMPTS = 3
@@ -52,13 +55,18 @@ SERVICE_UNAVAILABLE_RESPONSE = (
     "I found the relevant Kenya Airways policy, but the assistant service is busy "
     "right now. Please try again in a moment."
 )
+# The model must signal "cannot answer" with an exact token rather than a polite
+# refusal in its own words. A worded refusal is indistinguishable from an answer,
+# so it used to be returned as grounded, with sources shown under "I don't know".
+NO_ANSWER_TOKEN = "NO_ANSWER"
 SYSTEM_INSTRUCTION = (
     "You are a Kenya Airways passenger assistant. Answer the passenger's question "
-    "using ONLY the policy context provided. If the context does not contain the "
-    "answer, say you do not have that information and suggest contacting Kenya "
-    "Airways support. Never invent policy details, figures, or rules. Keep the "
-    "answer concise, factual, and friendly. Respond in short plain sentences "
-    "and simple bullet points only; do not use markdown tables."
+    "using ONLY the policy context provided. Never invent policy details, figures, "
+    "or rules, and never apply a rule stated for one case (for example domestic "
+    "flights) to a different case (for example international flights). If the "
+    f"context does not contain the answer, reply with exactly {NO_ANSWER_TOKEN} and "
+    "nothing else. Keep the answer concise, factual, and friendly. Respond in short "
+    "plain sentences and simple bullet points only; do not use markdown tables."
 )
 
 
@@ -129,7 +137,9 @@ async def answer_informational(db, query: str, k: int = 4) -> dict:
         return {"reply": SERVICE_UNAVAILABLE_RESPONSE, "status": "unavailable",
                 "grounded": False, "top_similarity": top, "sources": []}
 
-    if not reply:
+    # Empty output or the refusal token -> the same fallback as the gate, with no
+    # sources, so "I don't know" can never be presented as a sourced answer.
+    if not reply or reply.strip().strip("*_`\"'. ").upper().startswith(NO_ANSWER_TOKEN):
         return {"reply": FALLBACK_RESPONSE, "status": "fallback",
                 "grounded": False, "top_similarity": top, "sources": []}
 
