@@ -17,6 +17,7 @@ import asyncio
 import json
 
 from app.entities import extract_structured, extract_surname
+from app.execution import execute_transaction
 
 INTENT_SLOTS = {
     "check_flight_status": ["pnr", "last_name"],
@@ -94,9 +95,10 @@ async def handle_transactional(db, session_id: str, message: str) -> dict:
         return {"reply": SLOT_PROMPTS[missing[0]], "status": "collecting",
                 "intent": intent, "slots": slots}
 
-    # All slots present. Execution against the bookings table is Issue #10;
-    # for now the request is marked ready and summarised.
-    await _save(db, session_id, intent, slots, "ready")
-    summary = ", ".join(f"{k}: {v}" for k, v in slots.items())
-    return {"reply": f"Got everything needed to {INTENT_LABELS[intent]} ({summary}).",
-            "status": "ready", "intent": intent, "slots": slots}
+    # All slots present: execute the transaction against the bookings table
+    # (Issue #10). The session is marked 'done' so the next message starts a
+    # fresh request rather than resuming this one.
+    result = await execute_transaction(db, intent, slots)
+    await _save(db, session_id, intent, slots, "done")
+    return {"reply": result["reply"], "status": "done", "intent": intent,
+            "slots": slots, "outcome": result["outcome"]}
