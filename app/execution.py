@@ -10,7 +10,8 @@ inputs; this module carries it out and reports the result.
 Two operations:
   check_flight_status -> read: look up the booking and report its flight status.
   change_seat         -> write: look up the booking, verify the requested seat
-                         is free on that flight, then update it.
+                         is free on that flight, then update it. Only runs after
+                         the passenger has confirmed preview_seat_change().
 
 Note the slot/column mapping: the collected slot is called 'seat_number', but
 the bookings column is 'seat'. The lookup matches the PNR exactly and the
@@ -66,17 +67,19 @@ async def check_flight_status(db, slots: dict) -> dict:
                      "seat": booking["seat"]}}
 
 
-async def change_seat(db, slots: dict) -> dict:
+async def _check_seat_change(db, slots: dict):
+    """Run every read-only check for a seat change. Returns (booking, None) when
+    the change is allowed, or (None, refusal_result) when it is not."""
     requested = slots["seat_number"].upper()
     booking = await _find_booking(db, slots["pnr"], slots["last_name"])
     if booking is None:
-        return {"outcome": "not_found",
-                "reply": _NOT_FOUND.format(pnr=slots["pnr"], last_name=slots["last_name"])}
+        return None, {"outcome": "not_found",
+                      "reply": _NOT_FOUND.format(pnr=slots["pnr"], last_name=slots["last_name"])}
 
     current = booking["seat"]
     if current.upper() == requested:
-        return {"outcome": "no_change",
-                "reply": f"You're already in seat {current} on {booking['flight_number']}."}
+        return None, {"outcome": "no_change",
+                      "reply": f"You're already in seat {current} on {booking['flight_number']}."}
 
     # Business rule: the seat must be free on the same flight. A flight is
     # identified by its number and departure time, so two different departures
@@ -88,9 +91,40 @@ async def change_seat(db, slots: dict) -> dict:
         booking["flight_number"], booking["departure_time"], requested, booking["id"],
     )
     if taken is not None:
-        return {"outcome": "seat_taken",
-                "reply": f"Seat {requested} is already taken on {booking['flight_number']}. "
-                         f"Please choose a different seat."}
+        return None, {"outcome": "seat_taken",
+                      "reply": f"Seat {requested} is already taken on {booking['flight_number']}. "
+                               f"Please choose a different seat."}
+    return booking, None
+
+
+async def preview_seat_change(db, slots: dict) -> dict:
+    """Validate a seat change without writing anything, and describe exactly
+    what would happen so the passenger can confirm it first. Returns outcome
+    'confirm' when the change is allowed, otherwise the refusal."""
+    booking, refusal = await _check_seat_change(db, slots)
+    if refusal is not None:
+        return refusal
+    requested = slots["seat_number"].upper()
+    reply = (
+        "I have:\n"
+        f"• Booking {booking['pnr']}\n"
+        f"• Surname {booking['last_name']}\n"
+        f"• New seat {requested}\n\n"
+        f"I'll move you from seat {booking['seat']} to {requested} on flight "
+        f"{booking['flight_number']}.\n\n"
+        "Would you like me to proceed?"
+    )
+    return {"outcome": "confirm", "reply": reply}
+
+
+async def change_seat(db, slots: dict) -> dict:
+    # Checks run again at write time: the seat may have been taken since the
+    # passenger was shown the confirmation.
+    booking, refusal = await _check_seat_change(db, slots)
+    if refusal is not None:
+        return refusal
+    requested = slots["seat_number"].upper()
+    current = booking["seat"]
 
     await db.execute("update bookings set seat = $1 where id = $2", requested, booking["id"])
     return {"outcome": "changed",
