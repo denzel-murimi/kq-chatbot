@@ -15,7 +15,7 @@ import asyncpg
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.smalltalk import detect as detect_smalltalk
 
 class ChatRequest(BaseModel):
     message: str
@@ -87,15 +87,28 @@ async def db_check():
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(req: ChatRequest):
+    session_id = req.session_id or str(uuid.uuid4())
+    pending = await has_pending_request(pool, session_id)
+
+    # Pleasantries are answered before the router runs: cheaper, and the
+    # embedding router tends to misfile them as out-of-scope. Skipped mid-request,
+    # where e.g. "no thanks" is the answer to "Would you like me to proceed?".
+    smalltalk_reply = None if pending else detect_smalltalk(req.message)
+    if smalltalk_reply is not None:
+        return ChatResponse(
+            reply=smalltalk_reply,
+            route="smalltalk",
+            score=1.0,
+            session_id=session_id,
+        )
+
     result = await asyncio.to_thread(
         classify,
         req.message,
     )
-
     route = result["route"]
-    session_id = req.session_id or str(uuid.uuid4())
 
-    if route != "transactional" and await has_pending_request(pool, session_id):
+    if route != "transactional" and pending:
         clear_policy_question = (
             route == "informational"
             and result["score"] >= MIDFLOW_INFORMATIONAL_MIN_SCORE
