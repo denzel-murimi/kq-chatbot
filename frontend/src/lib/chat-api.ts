@@ -5,13 +5,17 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export type ChatResponse = {
   reply: string;
+  /** True only when the reply was generated from retrieved Kenya Airways documents. */
+  grounded?: boolean;
+  /** Deduplicated document titles behind a grounded reply. Empty otherwise. */
+  sources?: string[];
 };
 
 export async function sendChatMessage(message: string, sessionId: string): Promise<ChatResponse> {
   const res = await fetch(`${API_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    // The backend ignores session_id until the slot-filling sprint, but the contract can settle now.
+    // session_id ties follow-up messages to the same slot-filling conversation on the backend.
     body: JSON.stringify({ message, session_id: sessionId }),
     signal: AbortSignal.timeout(30_000),
   });

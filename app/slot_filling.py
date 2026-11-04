@@ -58,6 +58,15 @@ async def _get_session(db, session_id: str) -> dict:
     return {"intent": row["intent"], "slots": slots, "status": row["status"]}
 
 
+async def has_pending_request(db, session_id: str) -> bool:
+    """True while this session is part-way through a transactional request, i.e.
+    the bot has just asked for a missing detail. Read-only: never creates a row."""
+    status = await db.fetchval(
+        "select status from chat_sessions where session_id = $1", session_id
+    )
+    return status == "collecting"
+
+
 async def _save(db, session_id: str, intent: str, slots: dict, status: str) -> None:
     await db.execute(
         "update chat_sessions set intent = $1, slots = $2::jsonb, status = $3, "
