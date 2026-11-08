@@ -11,12 +11,19 @@ export type ChatResponse = {
   sources?: string[];
 };
 
-export async function sendChatMessage(message: string, sessionId: string): Promise<ChatResponse> {
+/** A prior turn, sent so the backend can resolve follow-ups like "that form". */
+export type HistoryTurn = { role: "user" | "bot"; text: string };
+
+export async function sendChatMessage(
+  message: string,
+  sessionId: string,
+  history: HistoryTurn[] = [],
+): Promise<ChatResponse> {
   const res = await fetch(`${API_URL}/chat`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     // session_id ties follow-up messages to the same slot-filling conversation on the backend.
-    body: JSON.stringify({ message, session_id: sessionId }),
+    body: JSON.stringify({ message, session_id: sessionId, history }),
     signal: AbortSignal.timeout(30_000),
   });
 
