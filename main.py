@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from app.router import classify
+from app.contextualize import contextualize
 from app.slot_filling import handle_transactional, has_pending_request
 from app.rag import answer_informational
 import asyncpg
@@ -24,6 +25,9 @@ from app.admin import router as admin_router
 class ChatRequest(BaseModel):
     message: str
     session_id: str | None = None
+    # Prior turns ({"role": "user" | "bot", "text": ...}) so a follow-up such as
+    # "where can I find that form?" can be rewritten into a standalone question.
+    history: list[dict] = []
 
 
 OUT_OF_SCOPE_REPLY = (
@@ -68,9 +72,18 @@ app.include_router(admin_router)
 
 
 
+_origins = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:3000"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=[
+        o.strip()
+        for o in _origins
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -119,9 +132,18 @@ async def chat(req: ChatRequest):
             session_id=session_id,
         )
 
+    # Rewrite follow-ups into standalone questions before routing. Skipped while a
+    # transaction is mid-flow: a bare PNR or "yes" must reach slot-filling as typed.
+    # contextualize is best-effort and falls back to the original message.
+    query = (
+        req.message
+        if pending
+        else await asyncio.to_thread(contextualize, req.message, req.history)
+    )
+
     result = await asyncio.to_thread(
         classify,
-        req.message,
+        query,
     )
     route = result["route"]
 
@@ -142,7 +164,7 @@ async def chat(req: ChatRequest):
         tx_result = await handle_transactional(
             pool,
             session_id,
-            req.message,
+            query,
         )
         outcome = tx_result.get("outcome")
         reply = tx_result["reply"]
@@ -151,7 +173,7 @@ async def chat(req: ChatRequest):
     else:
         # reply already holds the right text for every case: grounded answer,
         # hallucination fallback, or "service busy".
-        info = await answer_informational(pool, req.message)
+        info = await answer_informational(pool, query)
         reply = info["reply"]
         grounded = info["grounded"]
         top_similarity = info["top_similarity"]

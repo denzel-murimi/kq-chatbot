@@ -36,6 +36,14 @@ export function useChat() {
     const question = text.trim();
     if (!question || inFlight.current) return;
 
+    // Built before the new message is added: `messages` here is the prior conversation.
+    // Bot replies are included on purpose, since they name things ("Unaccompanied Minor Form")
+    // that a follow-up refers back to. The greeting (id 0) carries no context.
+    const history = messages
+      .filter((m) => m.id !== 0)
+      .slice(-6)
+      .map((m) => ({ role: m.role, text: m.text }));
+
     inFlight.current = true;
     setIsLoading(true);
     add("user", question);
@@ -43,7 +51,7 @@ export function useChat() {
     try {
       // One id per page load: a new page load starts a new, empty conversation.
       sessionId.current ||= crypto.randomUUID();
-      const { reply, grounded, sources } = await sendChatMessage(question, sessionId.current);
+      const { reply, grounded, sources } = await sendChatMessage(question, sessionId.current, history);
       add(
         "bot",
         reply || "Sorry, I did not get an answer back. Please try again.",

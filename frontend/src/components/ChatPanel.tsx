@@ -53,11 +53,6 @@ function MessageBubble({ message }: { message: Message }) {
           {isUser ? message.text : <FormattedText text={message.text} />}
         </p>
       </div>
-      {!isUser && message.sources && message.sources.length > 0 && (
-        <p className="mt-1.5 ml-1 max-w-[85%] text-[11px] leading-snug text-gray-500">
-          Sources: {message.sources.join(" · ")}
-        </p>
-      )}
     </div>
   );
 }

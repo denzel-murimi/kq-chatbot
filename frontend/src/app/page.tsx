@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MessageCircle, User } from "lucide-react";
-import { BrandMark } from "@/components/BrandMark";
+import { Logo } from "@/components/Logo";
 import { ChatPanel } from "@/components/ChatPanel";
 import { BottomNav, NAV_ITEMS, Sidebar, type TabId } from "@/components/Navigation";
 import { CheckInView } from "@/components/views/CheckInView";
@@ -33,8 +33,8 @@ export default function Home() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 xl:h-20 xl:px-8">
           <div className="flex items-center gap-3">
-            <div className="xl:hidden">
-              <BrandMark />
+            <div className="shrink-0 xl:hidden">
+              <Logo className="h-7 w-auto sm:h-9" priority />
             </div>
             <div>
               <h1 className="text-lg font-bold tracking-tight xl:text-2xl">{current.title}</h1>

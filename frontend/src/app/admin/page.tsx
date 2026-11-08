@@ -7,6 +7,7 @@ import { adminApi, AdminAuthError } from "@/lib/admin-api";
 import { KnowledgeBaseTab } from "@/components/admin/KnowledgeBaseTab";
 import { MonitoringTab } from "@/components/admin/MonitoringTab";
 import { BookingsTab } from "@/components/admin/BookingsTab";
+import { Logo } from "@/components/Logo";
 
 type Tab = "kb" | "monitoring" | "bookings";
 
@@ -79,10 +80,8 @@ export default function AdminPage() {
     <div className="min-h-dvh bg-gray-50 text-gray-900">
       <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 xl:px-8">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand/10 text-brand">
-            <KeyRound size={18} aria-hidden="true" />
-          </div>
-          <div>
+          <Logo className="h-8 w-auto" priority />
+          <div className="border-l border-gray-200 pl-3">
             <h1 className="text-base font-bold tracking-tight">Administration</h1>
             <p className="text-xs text-gray-500">Kenya Airways assistant — system admin</p>
           </div>
