@@ -1,6 +1,6 @@
 import { ClipboardCheck, Clock, Plane, type LucideIcon } from "lucide-react";
 import { DEMO_PASSENGER } from "@/lib/demo-data";
-import { BrandMark } from "./BrandMark";
+import { Logo } from "./Logo";
 
 export type TabId = "dashboard" | "checkin" | "status";
 
@@ -47,12 +47,9 @@ type NavProps = {
 export function Sidebar({ active, onChange }: NavProps) {
   return (
     <aside className="hidden w-64 shrink-0 flex-col border-r border-gray-200 bg-white xl:flex">
-      <div className="flex items-center gap-3 border-b border-gray-100 p-6">
-        <BrandMark />
-        <div>
-          <p className="text-lg font-bold leading-tight tracking-tight">Kenya Airways</p>
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500">Passenger self-service</p>
-        </div>
+      <div className="border-b border-gray-100 p-6">
+        <Logo className="h-auto w-full" priority />
+        <p className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Passenger self-service</p>
       </div>
       <nav aria-label="Main" className="flex-1 space-y-1.5 p-4">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => (

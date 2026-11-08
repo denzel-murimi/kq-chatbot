@@ -7,7 +7,6 @@ The documents were retrieved and lightly edited into clean prose for the
 retrieval-augmented generation pipeline. Policies change, so figures should be
 re-verified against the live pages before any real-world use.
 
-Retrieved: 2026-11-02
 
 | File | Topic | Source page |
 |---|---|---|
@@ -31,3 +30,32 @@ Retrieved: 2026-11-02
   Cancellations and Refunds pages.
 - This is a starter corpus intended to build and demonstrate the pipeline. It can
   be expanded with further official pages as the project grows.
+# Corpus Expansion — Sources and Provenance
+
+All documents below were drafted from the official Kenya Airways website
+(kenya-airways.com). Figures and rules are quoted
+as stated on those pages at that date; airline policies and fees change, so
+re-verify against the live pages before relying on a specific figure. Where a
+page rendered its figures only in JavaScript (fee tables), the document states
+the policy qualitatively and directs the reader to confirm current amounts,
+rather than stating an unverified number.
+
+| Document (title) | Source page | Accessed |
+|---|---|---|
+| Unaccompanied Minors | https://www.kenya-airways.com/en/plan/special-care/unaccompanied-minors/ | 2026-11-07 |
+| Special Assistance and Reduced Mobility | https://www.kenya-airways.com/en/plan/special-care/reduced-mobility/ | 2026-11-07 |
+| Travelling with Infants and Children | https://www.kenya-airways.com/en/plan/special-care/infant-toddlers/ | 2026-11-07 |
+| Medical Clearance and Travelling with Medical Needs | https://www.kenya-airways.com/en/plan/special-care/medical-special-support/ | 2026-11-07 |
+| Travelling While Pregnant | https://www.kenya-airways.com/en/plan/special-care/expectant-mothers/ | 2026-11-07 |
+| Travel Documents and Visa Requirements | https://www.kenya-airways.com/en/plan/travel-information/travel-requirements/ | 2026-11-07 |
+| Changing Your Booking | https://www.kenya-airways.com/en/book-manage/manage-booking/change-booking/ | 2026-11-07 |
+| Cancellations and Refunds | https://www.kenya-airways.com/en/policies/24-hours-refund-policy/ ; https://www.kenya-airways.com/en/book-manage/manage-booking/request-for-your-refund/ | 2026-11-07 |
+| Seat Selection | https://www.kenya-airways.com/en/experience/seat-selection/seat-terms/ | 2026-11-07 |
+| Excess, Overweight and Oversized Baggage | https://www.kenya-airways.com/en/policies/optional-fees/ ; https://www.kenya-airways.com/en/plan/baggage-information/special-baggage/ | 2026-11-07 |
+| Delayed, Lost or Damaged Baggage | https://www.kenya-airways.com/en/plan/baggage-information/conditions-of-carriage-baggage/ | 2026-11-07 |
+| Batteries, Power Banks and Electronic Devices | https://www.kenya-airways.com/en-us/plan/baggage-information/baggage-restrictions/ | 2026-11-07 |
+
+## Notes on overlap and figures
+- "Batteries, Power Banks and Electronic Devices" overlaps your existing prohibited/restricted-items document. Keep each fact in one place: either merge the battery guidance into the existing document or keep this as the dedicated battery document and trim duplicates from the other, so the two never state different rules.
+- Excess/overweight/oversize baggage fees, booking-change fees and exact lithium/power-bank watt-hour limits were not exposed as plain text on the site; those documents describe the policy and point the passenger to confirm current figures. Add the exact numbers if you obtain them from the live site.
+- Several rules are specific to flights to or from the United States (the 24-hour refund, the 10-day pregnancy letter, the lighter ban); these are stated as US-route-specific in the documents.
