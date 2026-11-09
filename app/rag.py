@@ -119,30 +119,41 @@ async def answer_informational(db, query: str, k: int = 4) -> dict:
       grounded       - True only when a grounded answer was produced
       top_similarity - best retrieval score (for logging/debugging)
       sources        - source documents (grounded answers only)
+      timings        - stage latencies in ms: 'retrieve', plus 'generate' when
+                       the model was called
     """
+    t0 = time.perf_counter()
     chunks = await retrieve(db, query, k=k)
+    t_retrieve = int((time.perf_counter() - t0) * 1000)
     top = chunks[0]["similarity"] if chunks else 0.0
 
     # The gate: below threshold -> fallback, no model call.
     if not chunks or top < SIMILARITY_THRESHOLD:
         return {"reply": FALLBACK_RESPONSE, "status": "fallback",
-                "grounded": False, "top_similarity": top, "sources": []}
+                "grounded": False, "top_similarity": top, "sources": [],
+                "timings": {"retrieve": t_retrieve}}
 
     context = "\n\n".join(f"[{c['doc_title']}]\n{c['content']}" for c in chunks)
+    t1 = time.perf_counter()
     try:
         reply = await asyncio.to_thread(_generate, query, context)
     except groq.GroqError:
         # Grounding succeeded but generation failed (busy / rate limited). This
         # is NOT a hallucination fallback — the policy was found.
+        t_generate = int((time.perf_counter() - t1) * 1000)
         return {"reply": SERVICE_UNAVAILABLE_RESPONSE, "status": "unavailable",
-                "grounded": False, "top_similarity": top, "sources": []}
+                "grounded": False, "top_similarity": top, "sources": [],
+                "timings": {"retrieve": t_retrieve, "generate": t_generate}}
+    t_generate = int((time.perf_counter() - t1) * 1000)
 
     # Empty output or the refusal token -> the same fallback as the gate, with no
     # sources, so "I don't know" can never be presented as a sourced answer.
     if not reply or reply.strip().strip("*_`\"'. ").upper().startswith(NO_ANSWER_TOKEN):
         return {"reply": FALLBACK_RESPONSE, "status": "fallback",
-                "grounded": False, "top_similarity": top, "sources": []}
+                "grounded": False, "top_similarity": top, "sources": [],
+                "timings": {"retrieve": t_retrieve, "generate": t_generate}}
 
     sources = [{"doc_title": c["doc_title"], "similarity": round(c["similarity"], 3)} for c in chunks]
     return {"reply": reply, "status": "grounded",
-            "grounded": True, "top_similarity": top, "sources": sources}
+            "grounded": True, "top_similarity": top, "sources": sources,
+            "timings": {"retrieve": t_retrieve, "generate": t_generate}}

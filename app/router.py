@@ -39,6 +39,11 @@ EXAMPLES: dict[str, list[str]] = {
         "What items are not allowed in checked baggage?",
         "How early should I get to the airport for an international flight?",
         "What is your policy on flight delays and compensation?",
+        "What is your policy on changing a flight?",
+        "Can I change my flight to another date?",
+        "What are the rules for cancelling a booking?",
+        "Is there a fee to change my ticket?",
+        "What is your refund policy?",
     ],
     "transactional": [
         "I want to change my seat on my booking.",
