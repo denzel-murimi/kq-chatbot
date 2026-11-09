@@ -1,26 +1,28 @@
 """
-Request logging and metrics (admin sprint).
+Request logging and metrics (admin sprint; extended with per-stage timings).
 
-log_query writes one row per /chat request into query_logs. It is deliberately
-best-effort: any failure is swallowed, because analytics must never break a
-passenger's reply. metrics() and recent() aggregate that table for the admin
-monitoring dashboard, and are also the measurement source for the Chapter 5
-evaluation (latency against the <3s NFR, grounding rate, route distribution).
+log_query writes one row per /chat request into query_logs, now including an
+optional per-stage latency breakdown (timings). It is best-effort: any failure
+is swallowed, because analytics must never break a passenger's reply. metrics()
+and recent() aggregate the table for the admin dashboard; stage_latencies()
+returns the average time spent in each stage, to locate the latency bottleneck.
 """
 from __future__ import annotations
 
+import json
+
 
 async def log_query(pool, *, session_id, route, message, latency_ms,
-                    grounded=None, top_similarity=None, outcome=None) -> None:
+                    grounded=None, top_similarity=None, outcome=None, timings=None) -> None:
     try:
         await pool.execute(
             "insert into public.query_logs "
-            "(session_id, route, message, grounded, top_similarity, outcome, latency_ms) "
-            "values ($1, $2, $3, $4, $5, $6, $7)",
+            "(session_id, route, message, grounded, top_similarity, outcome, latency_ms, timings) "
+            "values ($1, $2, $3, $4, $5, $6, $7, $8::jsonb)",
             session_id, route, message, grounded, top_similarity, outcome, latency_ms,
+            json.dumps(timings) if timings else None,
         )
     except Exception:
-        # Logging is non-critical; never let it affect the response.
         pass
 
 
@@ -50,6 +52,24 @@ async def metrics(pool) -> dict:
         "grounded_queries": grounded,
         "grounded_rate": round(grounded / informational, 3) if informational else None,
     }
+
+
+async def stage_latencies(pool) -> dict:
+    """Average milliseconds per stage across all logged requests that carried a
+    timing breakdown. Keys vary by request, so they are aggregated in Python."""
+    rows = await pool.fetch("select timings from public.query_logs where timings is not null")
+    sums: dict[str, int] = {}
+    counts: dict[str, int] = {}
+    for r in rows:
+        raw = r["timings"]
+        data = json.loads(raw) if isinstance(raw, str) else (raw or {})
+        for k, v in data.items():
+            try:
+                sums[k] = sums.get(k, 0) + int(v)
+                counts[k] = counts.get(k, 0) + 1
+            except (TypeError, ValueError):
+                continue
+    return {k: round(sums[k] / counts[k]) for k in sums if counts[k]}
 
 
 async def recent(pool, limit: int = 50) -> list[dict]:

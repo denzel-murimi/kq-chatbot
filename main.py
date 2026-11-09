@@ -5,7 +5,7 @@ import asyncio
 import time
 
 from app import analytics
-
+from app.timing import StageTimer
 from dotenv import load_dotenv
 
 # Load .env before importing app modules: some read settings (e.g. GROQ_MODEL) at import time.
@@ -110,6 +110,7 @@ async def db_check():
 @app.post("/chat", response_model=ChatResponse)
 async def chat(req: ChatRequest):
     t0 = time.perf_counter()
+    timer = StageTimer()
     session_id = req.session_id or str(uuid.uuid4())
     pending = await has_pending_request(pool, session_id)
 
@@ -135,16 +136,17 @@ async def chat(req: ChatRequest):
     # Rewrite follow-ups into standalone questions before routing. Skipped while a
     # transaction is mid-flow: a bare PNR or "yes" must reach slot-filling as typed.
     # contextualize is best-effort and falls back to the original message.
-    query = (
-        req.message
-        if pending
-        else await asyncio.to_thread(contextualize, req.message, req.history)
-    )
+    if pending:
+        query = req.message
+    else:
+        with timer.track("contextualize"):
+            query = await asyncio.to_thread(contextualize, req.message, req.history)
 
-    result = await asyncio.to_thread(
-        classify,
-        query,
-    )
+    with timer.track("classify"):
+        result = await asyncio.to_thread(
+            classify,
+            query,
+        )
     route = result["route"]
 
     if route != "transactional" and pending:
@@ -161,11 +163,12 @@ async def chat(req: ChatRequest):
     outcome: str | None = None
 
     if route == "transactional":
-        tx_result = await handle_transactional(
-            pool,
-            session_id,
-            query,
-        )
+        with timer.track("transactional"):
+            tx_result = await handle_transactional(
+                pool,
+                session_id,
+                query,
+            )
         outcome = tx_result.get("outcome")
         reply = tx_result["reply"]
     elif route == "out_of_scope":
@@ -173,7 +176,9 @@ async def chat(req: ChatRequest):
     else:
         # reply already holds the right text for every case: grounded answer,
         # hallucination fallback, or "service busy".
-        info = await answer_informational(pool, query)
+        with timer.track("informational"):
+            info = await answer_informational(pool, query)
+        timer.merge(info.get("timings"))
         reply = info["reply"]
         grounded = info["grounded"]
         top_similarity = info["top_similarity"]
@@ -193,6 +198,7 @@ async def chat(req: ChatRequest):
         grounded=grounded,
         top_similarity=top_similarity,
         outcome=outcome,
+        timings=timer.as_dict(),
     )
 
     return ChatResponse(
