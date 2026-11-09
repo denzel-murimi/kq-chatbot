@@ -97,7 +97,7 @@ def _generate(query: str, context: str) -> str:
                 # answer, and leave room for both.
                 reasoning_effort="low",
                 reasoning_format="parsed",
-                max_completion_tokens=1024,
+                max_completion_tokens=512,
             )
             return (resp.choices[0].message.content or "").strip()
         except (groq.InternalServerError, groq.APIConnectionError) as e:
