@@ -44,6 +44,15 @@ EXAMPLES: dict[str, list[str]] = {
         "What are the rules for cancelling a booking?",
         "Is there a fee to change my ticket?",
         "What is your refund policy?",
+        # "my flight" / "my trip" wording on document questions pulled them toward
+        # the flight-status exemplars ("What documents do I need to carry for my
+        # flight?" asked for a PNR). These teach the boundary: status/on-time is
+        # transactional; documents/visa/entry requirements are informational.
+        "What documents do I need to carry for my flight?",
+        "What travel documents are required for my trip?",
+        "Do I need a visa for my destination?",
+        "What do I need to bring to the airport?",
+        "What are the entry requirements for Kenya?",
     ],
     "transactional": [
         "I want to change my seat on my booking.",
@@ -125,13 +134,29 @@ def _cosine(a: list[float], b: list[float]) -> float:
     return float(np.dot(va, vb) / denom) if denom else 0.0
 
 
-def classify(message: str) -> dict:
+# Fail toward the safer pipeline. Every misroute seen in testing was an
+# informational question sent to transactional, never the reverse, and a wrong
+# "please give me your PNR" is far more jarring than a policy answer (which the
+# RAG hallucination gate already guards). So when transactional only narrowly
+# beats informational, the message goes to informational instead.
+# Calibration (gemini-embedding-001): genuine transactional requests won by
+# +0.046 to +0.158; the closest was "What time does my flight leave?" (+0.046).
+# 0.03 stays below that so real requests are unaffected.
+TRANSACTIONAL_MIN_MARGIN = 0.03
+
+
+def classify(message: str, prefer_informational: bool = True) -> dict:
     """
     Returns a dict:
       route    -> 'informational' | 'transactional' | 'out_of_scope'
       score    -> best cosine similarity (0..1)
       margin   -> gap to the runner-up class (how confident the pick is)
       scores   -> per-class best similarity, for logging/debugging
+      biased   -> True if a near-tie was resolved to informational
+
+    prefer_informational applies the TRANSACTIONAL_MIN_MARGIN safeguard. Pass
+    False while a booking request is collecting details, where short replies
+    (a PNR, a surname) belong to slot-filling.
     """
     query_vec = _embed(message)
     vectors = _example_vectors()
@@ -139,4 +164,15 @@ def classify(message: str) -> dict:
     route = max(scores, key=scores.get)
     ordered = sorted(scores.values(), reverse=True)
     margin = ordered[0] - ordered[1] if len(ordered) > 1 else ordered[0]
-    return {"route": route, "score": scores[route], "margin": margin, "scores": scores}
+
+    biased = False
+    if (
+        prefer_informational
+        and route == "transactional"
+        and scores["transactional"] - scores["informational"] < TRANSACTIONAL_MIN_MARGIN
+    ):
+        route = "informational"
+        margin = scores["informational"] - scores["transactional"]  # negative: overridden pick
+        biased = True
+
+    return {"route": route, "score": scores[route], "margin": margin, "scores": scores, "biased": biased}
