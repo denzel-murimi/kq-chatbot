@@ -146,6 +146,7 @@ async def chat(req: ChatRequest):
         result = await asyncio.to_thread(
             classify,
             query,
+            not pending,  # near-tie safeguard only outside an in-progress request
         )
     route = result["route"]
 
