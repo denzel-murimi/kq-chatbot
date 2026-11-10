@@ -1,12 +1,17 @@
 # Render deployment blueprint for the Kenya Airways assistant backend (FastAPI).
 # Place at the repository root. Secrets (sync: false) are entered in the Render
-# dashboard, not committed. Render serves the service over HTTPS, which the
-# HTTPS frontend requires to call it without mixed-content blocking.
+# dashboard, not committed. Render serves the service over HTTPS.
+#
+# region: frankfurt co-locates the backend with the West-EU Supabase database,
+# so each database round trip is ~10-30 ms instead of the ~150 ms transatlantic
+# hop from Oregon. Region is fixed at service creation, so changing it means
+# recreating the service (see the steps that accompanied this file).
 services:
   - type: web
     name: kq-chatbot-api
     runtime: python
     plan: free
+    region: frankfurt
     rootDir: .
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
@@ -21,9 +26,9 @@ services:
         sync: false
       - key: GROQ_API_KEY
         sync: false
-      - key: DATABASE_URL          # the Supabase transaction-pooler URL
+      - key: DATABASE_URL         
         sync: false
-      - key: ADMIN_KEY             # the admin-UI key
+      - key: ADMIN_KEY
         sync: false
-      - key: CORS_ORIGINS          # e.g. https://your-app.vercel.app,http://localhost:3000
+      - key: CORS_ORIGINS          
         sync: false
