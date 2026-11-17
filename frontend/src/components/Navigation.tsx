@@ -1,4 +1,4 @@
-import { ClipboardCheck, Clock, Plane, type LucideIcon } from "lucide-react";
+import { ClipboardCheck, Clock, Plane, Sparkles, type LucideIcon } from "lucide-react";
 import { DEMO_PASSENGER } from "@/lib/demo-data";
 import { Logo } from "./Logo";
 
@@ -17,7 +17,7 @@ type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   {
     id: "dashboard",
-    label: "Dashboard",
+    label: "My trip",
     icon: Plane,
     title: `Welcome back, ${DEMO_PASSENGER.firstName}`,
     subtitle: "Here is your upcoming journey.",
@@ -46,27 +46,39 @@ type NavProps = {
 // Desktop (xl and up): left sidebar.
 export function Sidebar({ active, onChange }: NavProps) {
   return (
-    <aside className="hidden w-64 shrink-0 flex-col border-r border-gray-200 bg-white xl:flex">
-      <div className="border-b border-gray-100 p-6">
-        <Logo className="h-auto w-full" priority />
-        <p className="mt-3 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Passenger self-service</p>
+    <aside className="hidden w-64 shrink-0 flex-col border-r border-line bg-surface xl:flex">
+      <div className="px-6 pb-5 pt-7">
+        <Logo className="h-auto w-full dark:brightness-0 dark:invert" priority />
       </div>
-      <nav aria-label="Main" className="flex-1 space-y-1.5 p-4">
-        {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            type="button"
-            onClick={() => onChange(id)}
-            aria-current={active === id ? "page" : undefined}
-            className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-              active === id ? "bg-brand/10 text-brand" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-            }`}
-          >
-            <Icon size={18} aria-hidden="true" />
-            {label}
-          </button>
-        ))}
+      <p className="px-6 pb-2 text-xs font-bold uppercase tracking-[0.14em] text-ink-3">Passenger self-service</p>
+      <nav aria-label="Main" className="flex-1 space-y-1 px-3">
+        {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+          const isActive = active === id;
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => onChange(id)}
+              aria-current={isActive ? "page" : undefined}
+              className={`relative flex min-h-11 w-full items-center gap-3 rounded-lg px-3 text-[15px] font-semibold transition-colors duration-200 ${
+                isActive ? "bg-brand-soft text-brand-ink" : "text-ink-2 hover:bg-surface-2 hover:text-ink"
+              }`}
+            >
+              {isActive && <span aria-hidden="true" className="absolute inset-y-2 left-0 w-1 rounded-r bg-brand" />}
+              <Icon size={18} aria-hidden="true" />
+              {label}
+            </button>
+          );
+        })}
       </nav>
+      <div className="m-4 rounded-xl border border-line bg-surface-2 p-4">
+        <p className="flex items-center gap-2 text-sm font-bold">
+          <Sparkles size={16} className="text-brand-ink" aria-hidden="true" /> AI Assistant
+        </p>
+        <p className="mt-1 text-sm leading-snug text-ink-3">
+          Answers come from Kenya Airways policy documents, with sources shown.
+        </p>
+      </div>
     </aside>
   );
 }
@@ -74,21 +86,33 @@ export function Sidebar({ active, onChange }: NavProps) {
 // Below xl: a bottom tab bar, since the sidebar is hidden.
 export function BottomNav({ active, onChange }: NavProps) {
   return (
-    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 flex h-16 border-t border-gray-200 bg-white xl:hidden">
-      {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-        <button
-          key={id}
-          type="button"
-          onClick={() => onChange(id)}
-          aria-current={active === id ? "page" : undefined}
-          className={`flex flex-1 flex-col items-center justify-center gap-1 text-xs font-medium ${
-            active === id ? "text-brand" : "text-gray-500"
-          }`}
-        >
-          <Icon size={20} aria-hidden="true" />
-          {label}
-        </button>
-      ))}
+    <nav
+      aria-label="Main"
+      className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur xl:hidden"
+    >
+      {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
+        const isActive = active === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            onClick={() => onChange(id)}
+            aria-current={isActive ? "page" : undefined}
+            className={`flex h-16 flex-1 flex-col items-center justify-center gap-1 text-xs font-semibold transition-colors ${
+              isActive ? "text-brand-ink" : "text-ink-3 hover:text-ink"
+            }`}
+          >
+            <span
+              className={`flex h-7 w-12 items-center justify-center rounded-full transition-colors ${
+                isActive ? "bg-brand-soft" : ""
+              }`}
+            >
+              <Icon size={20} aria-hidden="true" />
+            </span>
+            {label}
+          </button>
+        );
+      })}
     </nav>
   );
 }

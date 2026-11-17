@@ -1,43 +1,154 @@
 @import "tailwindcss";
 
+/*
+ * Semantic tokens. Components use these names (bg-surface, text-ink-2, border-line …), never raw
+ * gray-*, so light and dark mode are one set of overrides here instead of dark: on every class.
+ *
+ * Contrast notes (WCAG AA, 4.5:1 for normal text):
+ *   brand      #d7141c  white on it 5.2:1  — buttons and fills only
+ *   brand-ink  #b5101a  on white   6.8:1  — red text and links (raw KQ red #ec1c24 is 4.4:1 and fails)
+ *   ink-3      #5b6472  on white   6.0:1  — the lightest text colour allowed
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --canvas: #f4f5f7;
+  --surface: #ffffff;
+  --surface-2: #f7f8fa;
+  --line: #e4e7ec;
+  --line-strong: #cfd4dc;
+  --ink: #111418;
+  --ink-2: #3d4450;
+  --ink-3: #5b6472;
+  --brand: #d7141c;
+  --brand-hover: #b9111a;
+  --brand-ink: #b5101a;
+  --brand-soft: #fdecec;
+  --on-brand: #ffffff;
+  --ok: #157f3c;
+  --ok-soft: #e7f6ec;
+  --warn: #9a5b00;
+  --warn-soft: #fff4dc;
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+  --night: #12151a; /* always-dark panels: admin sidebar, boarding-pass header */
+  --night-2: #1d2128;
+  --on-night: #f2f4f7;
+  --on-night-2: #a9b1bd;
+  --on-night-ok: #7ee2a3;
+  color-scheme: light;
+}
+
+/*
+ * Dark tokens key off data-theme on <html>, which an inline script in layout.tsx sets before first
+ * paint (from the saved preference, or the OS setting when the preference is "system").
+ */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root[data-theme="dark"] {
+  --canvas: #0c0e11;
+  --surface: #15181d;
+  --surface-2: #1b1f25;
+  --line: #272c34;
+  --line-strong: #39404b;
+  --ink: #f2f4f7;
+  --ink-2: #c8cdd5;
+  --ink-3: #9aa3b0;
+  --brand: #e0262d;
+  --brand-hover: #f0393f;
+  --brand-ink: #ff7b80;
+  --brand-soft: #3a1416;
+  --ok: #4ade80;
+  --ok-soft: #0f2a1a;
+  --warn: #fbbf24;
+  --warn-soft: #2e2208;
+  --danger: #f87171;
+  --danger-soft: #341414;
+  --night: #0a0c0f;
+  --night-2: #161a20;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-canvas: var(--canvas);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-on-brand: var(--on-brand);
+  --color-ok: var(--ok);
+  --color-ok-soft: var(--ok-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-night: var(--night);
+  --color-night-2: var(--night-2);
+  --color-on-night: var(--on-night);
+  --color-on-night-2: var(--on-night-2);
+  --color-on-night-ok: var(--on-night-ok);
+
+  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-atkinson-mono), ui-monospace, monospace;
+  --font-admin: var(--font-fira-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-admin-mono: var(--font-fira-code), ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  --animate-fade-up: fade-up 0.32s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  --animate-fade-in: fade-in 0.2s ease-out both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--canvas);
+  color: var(--ink);
 }
-   @theme {
-     --color-brand: #ec1c24;
-     --color-ink: #1a1a1a;
 
-     --animate-fade-up: fade-up 0.3s ease-out both;
+/* In the base layer so a component's own focus utilities can override it. */
+@layer base {
+  /* One visible focus style everywhere, keyboard only. */
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 2px;
+  }
 
-     @keyframes fade-up {
-       from {
-         opacity: 0;
-         transform: translateY(8px);
-       }
-       to {
-         opacity: 1;
-         transform: translateY(0);
-       }
-     }
-   }
+  button:not(:disabled),
+  [role="button"] {
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

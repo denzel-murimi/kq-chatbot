@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Send, Sparkles, X } from "lucide-react";
+import { ArrowUp, FileText, Sparkles, X } from "lucide-react";
 import type { Message } from "@/hooks/useChat";
 import { BrandMark } from "./BrandMark";
 
@@ -12,6 +12,14 @@ type Props = {
   onClose: () => void;
 };
 
+// Shown until the passenger sends their first message. Each maps to a document in the corpus.
+const STARTERS = [
+  "How much checked baggage can I take?",
+  "Can I carry a power bank on board?",
+  "Do I need a visa to fly to London?",
+  "When does check-in close?",
+];
+
 // Renders **bold** segments from the assistant's reply as <strong>. Everything else stays plain
 // text, so a reply can never inject HTML into the page.
 function FormattedText({ text }: { text: string }) {
@@ -19,7 +27,7 @@ function FormattedText({ text }: { text: string }) {
     <>
       {text.split(/(\*\*[^*]+\*\*)/g).map((part, i) =>
         part.startsWith("**") && part.endsWith("**") ? (
-          <strong key={i} className="font-bold text-gray-900">
+          <strong key={i} className="font-bold text-ink">
             {part.slice(2, -2)}
           </strong>
         ) : (
@@ -33,25 +41,45 @@ function FormattedText({ text }: { text: string }) {
 function MessageBubble({ message }: { message: Message }) {
   const isUser = message.role === "user";
 
-  return (
-    <div className={`flex flex-col motion-safe:animate-fade-up ${isUser ? "items-end" : "items-start"}`}>
-      {!isUser && (
-        <div className="mb-1.5 ml-1 flex items-center gap-2">
-          <BrandMark size="sm" />
-          <span className="text-xs font-bold text-gray-700">AI Assistant</span>
-          {message.time && <span className="text-[11px] text-gray-500">{message.time}</span>}
-        </div>
-      )}
-      <div
-        className={`max-w-[85%] px-4 py-3 text-sm shadow-xs ${
-          isUser
-            ? "rounded-2xl rounded-tr-sm bg-ink text-white"
-            : "rounded-2xl rounded-tl-sm border border-gray-200 bg-white text-gray-800"
-        }`}
-      >
-        <p className="whitespace-pre-wrap leading-relaxed">
-          {isUser ? message.text : <FormattedText text={message.text} />}
+  if (isUser) {
+    return (
+      <div className="flex justify-end motion-safe:animate-fade-up">
+        <p className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-md bg-night px-4 py-3 text-[15px] leading-relaxed text-on-night">
+          {message.text}
         </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex gap-3 motion-safe:animate-fade-up">
+      <BrandMark size="sm" />
+      <div className="min-w-0 max-w-[88%]">
+        <p className="mb-1 flex items-baseline gap-2 text-xs">
+          <span className="font-bold text-ink-2">Assistant</span>
+          {message.time && <span className="text-ink-3">{message.time}</span>}
+        </p>
+        <div className="rounded-2xl rounded-tl-md border border-line bg-surface px-4 py-3 text-[15px] leading-relaxed text-ink-2">
+          <p className="whitespace-pre-wrap">
+            <FormattedText text={message.text} />
+          </p>
+          {message.sources && message.sources.length > 0 && (
+            <div className="mt-3 border-t border-line pt-2.5">
+              <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-ink-3">Sources</p>
+              <ul className="flex flex-wrap gap-1.5">
+                {message.sources.map((s) => (
+                  <li
+                    key={s}
+                    className="inline-flex items-center gap-1 rounded-md bg-surface-2 px-2 py-1 text-xs font-semibold text-ink-2"
+                  >
+                    <FileText size={12} aria-hidden="true" />
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -59,13 +87,15 @@ function MessageBubble({ message }: { message: Message }) {
 
 function TypingIndicator() {
   return (
-    <div role="status" className="flex flex-col items-start">
-      <span className="sr-only">AI Assistant is typing</span>
-      <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-sm border border-gray-200 bg-white px-5 py-4 shadow-xs">
+    <div role="status" className="flex gap-3">
+      <BrandMark size="sm" />
+      <span className="sr-only">Assistant is typing</span>
+      <div className="flex items-center gap-1.5 rounded-2xl rounded-tl-md border border-line bg-surface px-4 py-3.5">
         {[0, 150, 300].map((delay) => (
           <span
             key={delay}
-            className="h-2 w-2 animate-bounce rounded-full bg-gray-300"
+            aria-hidden="true"
+            className="h-2 w-2 animate-bounce rounded-full bg-ink-3/60"
             style={{ animationDelay: `${delay}ms` }}
           />
         ))}
@@ -77,12 +107,19 @@ function TypingIndicator() {
 export function ChatPanel({ messages, isLoading, isOpen, onSend, onClose }: Props) {
   const [input, setInput] = useState("");
   const endRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, isLoading]);
 
+  // When the slide-over opens on small screens, move focus into it.
+  useEffect(() => {
+    if (isOpen) inputRef.current?.focus({ preventScroll: true });
+  }, [isOpen]);
+
   const canSend = input.trim() !== "" && !isLoading;
+  const showStarters = messages.every((m) => m.role === "bot") && !isLoading;
 
   function submit() {
     if (!canSend) return;
@@ -96,25 +133,29 @@ export function ChatPanel({ messages, isLoading, isOpen, onSend, onClose }: Prop
       onKeyDown={(e) => {
         if (e.key === "Escape") onClose();
       }}
-      className={`fixed inset-0 z-40 flex flex-col bg-white transition-[transform,visibility] duration-300 ${
+      className={`fixed inset-0 z-40 flex flex-col bg-canvas transition-[transform,visibility] duration-300 ease-out ${
         isOpen ? "visible translate-x-0" : "invisible translate-x-full"
-      } xl:visible xl:static xl:z-auto xl:w-[400px] xl:shrink-0 xl:translate-x-0 xl:border-l xl:border-gray-200`}
+      } xl:visible xl:static xl:z-auto xl:w-[420px] xl:shrink-0 xl:translate-x-0 xl:border-l xl:border-line`}
     >
-      <header className="flex h-16 shrink-0 items-center justify-between border-b border-gray-100 px-4 xl:h-20 xl:px-6">
+      <header className="flex h-16 shrink-0 items-center justify-between border-b border-line bg-surface px-4 xl:h-20 xl:px-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand/10 text-brand">
+          <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-brand-soft text-brand-ink">
             <Sparkles size={18} aria-hidden="true" />
+            <span
+              aria-hidden="true"
+              className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-surface bg-ok"
+            />
           </div>
           <div>
-            <h2 className="text-sm font-bold">AI Assistant</h2>
-            <p className="text-xs text-gray-500">Baggage, check-in and your booking</p>
+            <h2 className="font-bold leading-tight">AI Assistant</h2>
+            <p className="text-sm text-ink-3">Baggage, check-in and your booking</p>
           </div>
         </div>
         <button
           type="button"
           onClick={onClose}
           aria-label="Close chat"
-          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 xl:hidden"
+          className="flex h-11 w-11 items-center justify-center rounded-lg text-ink-2 hover:bg-surface-2 xl:hidden"
         >
           <X size={20} aria-hidden="true" />
         </button>
@@ -123,11 +164,30 @@ export function ChatPanel({ messages, isLoading, isOpen, onSend, onClose }: Prop
       <div
         role="log"
         aria-label="Conversation"
-        className="flex-1 space-y-5 overflow-y-auto overscroll-contain bg-gray-50/60 p-4 xl:p-6"
+        aria-live="polite"
+        className="flex-1 space-y-5 overflow-y-auto overscroll-contain p-4 xl:p-6"
       >
         {messages.map((m) => (
           <MessageBubble key={m.id} message={m} />
         ))}
+        {showStarters && (
+          <div className="pl-9 motion-safe:animate-fade-up">
+            <p className="mb-2 text-xs font-bold uppercase tracking-wider text-ink-3">Try asking</p>
+            <ul className="flex flex-col items-start gap-2">
+              {STARTERS.map((q) => (
+                <li key={q}>
+                  <button
+                    type="button"
+                    onClick={() => onSend(q)}
+                    className="min-h-10 rounded-xl border border-line bg-surface px-3.5 py-2 text-left text-sm font-semibold text-ink-2 transition-colors hover:border-brand/40 hover:text-brand-ink"
+                  >
+                    {q}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {isLoading && <TypingIndicator />}
         <div ref={endRef} />
       </div>
@@ -137,10 +197,11 @@ export function ChatPanel({ messages, isLoading, isOpen, onSend, onClose }: Prop
           e.preventDefault();
           submit();
         }}
-        className="shrink-0 border-t border-gray-100 bg-white p-4"
+        className="shrink-0 border-t border-line bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"
       >
-        <div className="flex items-end gap-2 rounded-2xl border border-gray-300 bg-white p-2 transition focus-within:border-brand focus-within:ring-2 focus-within:ring-brand/20">
+        <div className="flex items-end gap-2 rounded-2xl border border-line-strong bg-surface p-1.5 transition focus-within:border-brand focus-within:ring-4 focus-within:ring-brand/15">
           <textarea
+            ref={inputRef}
             aria-label="Message"
             rows={1}
             value={input}
@@ -151,21 +212,19 @@ export function ChatPanel({ messages, isLoading, isOpen, onSend, onClose }: Prop
                 submit();
               }
             }}
-            placeholder="Type your message..."
-            className="field-sizing-content max-h-32 min-h-11 flex-1 resize-none bg-transparent py-2.5 pl-3 text-sm font-medium outline-none placeholder:text-gray-500"
+            placeholder="Ask about baggage, check-in…"
+            className="field-sizing-content max-h-32 min-h-11 flex-1 resize-none bg-transparent px-3 py-2.5 text-[15px] text-ink outline-none placeholder:text-ink-3 focus-visible:outline-none"
           />
           <button
             type="submit"
             disabled={!canSend}
             aria-label="Send message"
-            className={`shrink-0 rounded-xl p-3 transition ${
-              canSend ? "bg-brand text-white hover:bg-brand/90" : "cursor-not-allowed bg-gray-100 text-gray-400"
-            }`}
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-brand text-on-brand transition hover:bg-brand-hover active:scale-95 disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-ink-3"
           >
-            <Send size={18} aria-hidden="true" />
+            <ArrowUp size={20} aria-hidden="true" />
           </button>
         </div>
-        <p className="mt-2 text-center text-[11px] text-gray-500">
+        <p className="mt-2 text-center text-xs text-ink-3">
           Academic prototype, not an official Kenya Airways service. Booking data is simulated.
         </p>
       </form>
