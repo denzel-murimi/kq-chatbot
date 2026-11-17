@@ -31,9 +31,19 @@ class ChatRequest(BaseModel):
 
 
 OUT_OF_SCOPE_REPLY = (
-    "I can help with Kenya Airways travel policies (baggage, check-in, prohibited "
-    "items and travelling with pets) and with your booking: flight status and seat "
-    "changes. I can't help with that one, but ask me anything in those areas."
+    "I can help with Kenya Airways travel policies (baggage, check-in, special "
+    "assistance, travelling with children, refunds and more) and with your booking: "
+    "flight status and seat changes. I can't help with that one, but ask me "
+    "anything in those areas."
+)
+
+# Out-of-scope messages that look like flight search, fares or a new booking.
+FLIGHT_SEARCH_REPLY = (
+    "I can't search for flights or fares, or make new bookings. For those, please "
+    "use kenya-airways.com or the KQ app. I can help with Kenya Airways travel "
+    "policies (baggage, check-in, special assistance, travelling with children, "
+    "refunds and more) and with your existing booking (flight status and seat "
+    "changes)."
 )
 
 # While the bot is waiting for a booking detail, a short reply such as a bare
@@ -173,7 +183,11 @@ async def chat(req: ChatRequest):
         outcome = tx_result.get("outcome")
         reply = tx_result["reply"]
     elif route == "out_of_scope":
-        reply = OUT_OF_SCOPE_REPLY
+        reply = (
+            FLIGHT_SEARCH_REPLY
+            if result.get("topic") == "flight_search"
+            else OUT_OF_SCOPE_REPLY
+        )
     else:
         # reply already holds the right text for every case: grounded answer,
         # hallucination fallback, or "service busy".

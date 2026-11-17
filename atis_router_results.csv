@@ -1,0 +1,202 @@
+atis_intent,text,route,score,biased
+atis_flight,i need a flight from milwaukee to seattle,out_of_scope,0.85,False
+atis_flight,new york to las vegas sunday afternoon,out_of_scope,0.776,False
+atis_airfare,what is the first class round trip airfare from india indianapolis to memphis,out_of_scope,0.874,False
+atis_flight,show me flights between toronto and san diego,out_of_scope,0.869,False
+atis_flight,flight on american from miami to chicago arrive in chicago about 5 pm,out_of_scope,0.793,False
+atis_flight,please list all the flights from chicago to kansas city on june seventeenth,out_of_scope,0.879,False
+atis_airfare,get saturday fares from washington to toronto,out_of_scope,0.895,False
+atis_flight,get flights from milwaukee to dtw,out_of_scope,0.853,False
+atis_flight,please find a flight that goes from kansas city to newark to orlando back to kansas city,out_of_scope,0.84,False
+atis_flight,show me northwest flight 608 from kansas city to st. paul,out_of_scope,0.838,False
+atis_flight,list flights from chicago to kansas city in the morning,out_of_scope,0.9,False
+atis_flight,on friday night i would like a flight from newark to los angeles,out_of_scope,0.853,False
+atis_flight,list flights from washington dc to toronto,out_of_scope,0.864,False
+atis_flight,list all flights from kansas city to cleveland,out_of_scope,0.865,False
+atis_flight,show me flights from montreal to orlando,out_of_scope,0.884,False
+atis_airline,which airline is us,out_of_scope,0.853,False
+atis_flight,what flights leave from cleveland and go to dallas,out_of_scope,0.849,False
+atis_flight,are there any flights from boston to orlando connecting in columbus,out_of_scope,0.873,False
+atis_flight,which flights depart from new york and arrive in los angeles after 10 am,out_of_scope,0.83,False
+atis_flight,what is the earliest daily flight between oakland and salt lake city,out_of_scope,0.844,False
+atis_abbreviation,what does fare code bh mean,out_of_scope,0.8,False
+atis_flight,i need a flight from milwaukee to washington dc on monday night,out_of_scope,0.854,False
+atis_flight,kansas city to atlanta monday morning flights,out_of_scope,0.853,False
+atis_flight,list flights from la guardia to burbank,out_of_scope,0.85,False
+atis_flight,show me all delta airlines flights from montreal to orlando,out_of_scope,0.879,False
+atis_flight,what are the flights from phoenix arizona to st. paul minnesota on tuesday,out_of_scope,0.88,False
+atis_flight,show flights tuesday evening from milwaukee to st. louis,out_of_scope,0.892,False
+atis_airfare,show me the cheapest one way fare from san francisco to houston on february twenty eighth 1994,out_of_scope,0.868,False
+atis_flight,can you find me a flight from salt lake city to new york city next saturday before arriving before 6 pm,out_of_scope,0.856,False
+atis_flight,list delta flights from seattle to salt lake city,out_of_scope,0.865,False
+atis_flight,i need a flight from las vegas to ontario,out_of_scope,0.843,False
+atis_flight,i would like to find a flight from charlotte to las vegas that makes a stop in st. louis,out_of_scope,0.824,False
+atis_flight,i need a flight from denver to salt lake city on monday,out_of_scope,0.872,False
+atis_ground_service,i need to rent a car at tampa,out_of_scope,0.756,False
+atis_flight,show me the flights between los angeles and dallas,out_of_scope,0.88,False
+atis_flight,list wednesday night flights from oakland to salt lake city,out_of_scope,0.86,False
+atis_flight,i would like a flight on friday morning from toronto to montreal,out_of_scope,0.852,False
+atis_flight,i want a flight from montreal to washington dc,out_of_scope,0.834,False
+atis_flight,i would like a flight from san francisco to st. petersburg,out_of_scope,0.83,False
+atis_flight,show me all the flights from burbank to milwaukee,out_of_scope,0.868,False
+atis_flight,list the flights from denver to westchester county on june seventh,out_of_scope,0.892,False
+atis_flight,show me all flights from san jose to phoenix,out_of_scope,0.886,False
+atis_flight,show me the first class and coach flights between jfk and orlando,out_of_scope,0.891,False
+atis_flight_time,what are the departure times from detroit to westchester county,out_of_scope,0.818,False
+atis_flight,show me a one way flight from milwaukee to orlando leaving wednesday afternoon after 6 pm,out_of_scope,0.853,False
+atis_flight,list saturday flights from boston to washington,out_of_scope,0.893,False
+atis_flight,show me all flights from seattle to boston with stopovers in minneapolis,out_of_scope,0.875,False
+atis_flight,give me the saturday morning flights on continental that have meals from chicago to minneapolis,out_of_scope,0.872,False
+atis_flight,give me the flights from phoenix to milwaukee on american airlines,out_of_scope,0.867,False
+atis_flight,i need an early flight from milwaukee to denver,out_of_scope,0.875,False
+atis_airline,what is airline wn,out_of_scope,0.802,False
+atis_flight,which flights leave chicago on april twelfth and arrive in indianapolis in the morning,out_of_scope,0.865,False
+atis_ground_service,what types of ground transportation are available in denver,out_of_scope,0.878,False
+atis_flight,show me all nonstop flights from st. petersburg to charlotte,out_of_scope,0.854,False
+atis_flight,find flight from san jose to houston on wednesday,out_of_scope,0.859,False
+atis_flight,find flight from memphis to cincinnati on sunday,out_of_scope,0.848,False
+atis_airline,list the airlines with flights to or from denver,out_of_scope,0.873,False
+atis_flight,show me the first class and coach flights from kennedy airport to miami,out_of_scope,0.909,False
+atis_flight,show me the flights between oakland and salt lake city,out_of_scope,0.875,False
+atis_flight,list a flight on delta airlines from toronto to san diego,out_of_scope,0.83,False
+atis_flight,please find a flight from orlando to kansas city,out_of_scope,0.864,False
+atis_flight,i would like flights from salt lake city to cincinnati,out_of_scope,0.836,False
+atis_abbreviation,what is cvg,informational,0.734,False
+atis_flight,list all flights arriving or leaving denver between 8 and 9 pm,out_of_scope,0.882,False
+atis_flight,i need a flight from milwaukee to indianapolis leaving monday before 9 am,out_of_scope,0.843,False
+atis_quantity,how many canadian airlines international flights use j31,out_of_scope,0.783,False
+atis_aircraft,what type of aircraft is used for the american flight leaving at 419 pm,out_of_scope,0.821,False
+atis_flight,i would like a flight leaving san francisco for san diego,out_of_scope,0.838,False
+atis_ground_service,what is the ground transportation between the charlotte airport charlotte airport and downtown charlotte,out_of_scope,0.846,False
+atis_flight,show me flights from milwaukee to orlando one way,out_of_scope,0.871,False
+atis_airfare,how much does it cost to fly on twa from columbus to milwaukee,out_of_scope,0.865,False
+atis_flight,i need a flight leaving kansas city to chicago leaving next wednesday and returning the following day,out_of_scope,0.837,False
+atis_flight,show flights from st. petersburg to charlotte,out_of_scope,0.858,False
+atis_flight,what is the earliest arriving flight from houston to orlando,out_of_scope,0.845,False
+atis_flight,which flights go from new york to miami and back,out_of_scope,0.879,False
+atis_airline,which airline is kw,out_of_scope,0.808,False
+atis_flight,i would like flight information from phoenix to denver,out_of_scope,0.884,False
+atis_flight,los angeles to pittsburgh afternoon tuesday,out_of_scope,0.808,False
+atis_flight,list all flights from cleveland to kansas city on monday,out_of_scope,0.884,False
+atis_flight,on thursday morning i would like a nonstop flight from indianapolis to toronto,out_of_scope,0.818,False
+atis_flight,a flight from baltimore to san francisco arriving between 5 and 8 pm,out_of_scope,0.813,False
+atis_flight,the flights from ontario to westchester that stop in chicago,out_of_scope,0.782,False
+atis_flight,list american airlines flights from houston to milwaukee departing friday pm,out_of_scope,0.863,False
+atis_flight,what are the flights from tampa to milwaukee,out_of_scope,0.863,False
+atis_abbreviation,what class is fare code q,out_of_scope,0.811,False
+atis_flight,which flights depart from tampa and arrive in cincinnati in the evening,out_of_scope,0.826,False
+atis_flight,i need a daily flight from st. louis to milwaukee,out_of_scope,0.807,False
+atis_airline,what airline is hp,out_of_scope,0.797,True
+atis_flight,list early evening flights from tampa to cincinnati,out_of_scope,0.849,False
+atis_flight,show me the direct flights from charlotte to minneapolis on tuesday morning,out_of_scope,0.919,False
+atis_flight,i would like to fly from san diego to seattle,out_of_scope,0.837,False
+atis_airline,what airline is dl,out_of_scope,0.814,False
+atis_flight,are there any flights on june tenth from burbank to tacoma,out_of_scope,0.845,False
+atis_flight,i need a flight from new york to los angeles on saturday evening on us air,out_of_scope,0.839,False
+atis_flight,give me the flights from chicago to seattle saturday morning that have meals,out_of_scope,0.867,False
+atis_ground_service,now show me ground transportation in houston on monday afternoon,out_of_scope,0.843,False
+atis_flight,list flights from washington dc to montreal,out_of_scope,0.874,False
+atis_airfare,cheapest one way fare from indianapolis to orlando on december twenty seventh,out_of_scope,0.837,False
+atis_flight,list flights from las vegas to phoenix,out_of_scope,0.859,False
+atis_flight,show me the first class and coach flights from jfk to miami,out_of_scope,0.916,False
+atis_airfare,give me the fares from miami to cleveland next sunday,out_of_scope,0.924,False
+atis_flight,i would like a flight from orlando to salt lake city for april first on delta airlines,out_of_scope,0.828,False
+atis_flight,give me the flights from pittsburgh to los angeles thursday evening,out_of_scope,0.884,False
+atis_flight,show me all the flights from kansas city to st. paul,out_of_scope,0.88,False
+atis_flight,what are the flights between washington dc and columbus ohio,out_of_scope,0.873,False
+atis_abbreviation,what does fare code bn mean,out_of_scope,0.798,False
+atis_flight,which flights go from milwaukee to tampa and stop in nashville,out_of_scope,0.84,False
+atis_flight,i need flight information for flights departing from cleveland going back to milwaukee wednesday after 5 pm,out_of_scope,0.817,False
+atis_flight,show me the flights from orlando to houston,out_of_scope,0.889,False
+atis_flight,show me flights from montreal to orlando and long beach,out_of_scope,0.87,False
+atis_flight,los angeles to minneapolis thursday afternoon,out_of_scope,0.777,False
+atis_flight,give me the flights from phoenix to milwaukee on wednesday on american airlines,out_of_scope,0.874,False
+atis_flight,i'd like a flight from new york to los angeles on saturday morning on us air,out_of_scope,0.841,False
+atis_abbreviation,what is a d9s,informational,0.725,False
+atis_ground_service,is there ground transportation available at the indianapolis airport,out_of_scope,0.863,False
+atis_flight,which flights are available from san jose to nashville leaving in the morning on april twenty three,out_of_scope,0.868,False
+atis_flight,give me the flights from seattle to chicago that have meals on continental saturday morning,out_of_scope,0.865,False
+atis_flight,which flights leave april twelfth from indianapolis and arrive in montreal around 10 pm,out_of_scope,0.826,False
+atis_flight,show me all the morning flights from philadelphia to fort worth,out_of_scope,0.899,False
+atis_flight,i would like flights leaving from milwaukee to orlando,out_of_scope,0.844,False
+atis_ground_service,please show ground transportation to milwaukee,out_of_scope,0.845,False
+atis_flight,which flights arrive in burbank from kansas city on saturdays in the afternoon,out_of_scope,0.817,False
+atis_flight,what's the cheapest flight from san francisco to denver,out_of_scope,0.905,False
+atis_flight,show me the cheapest one way flights from montreal to orlando,out_of_scope,0.879,False
+atis_flight,please list the flights from charlotte to newark,out_of_scope,0.871,False
+atis_flight,minneapolis to pittsburgh first class flight,out_of_scope,0.795,False
+atis_flight,what is the earliest arriving flight from houston to orlando,out_of_scope,0.845,False
+atis_flight,give me the flights from new york city to nashville leaving after 5 pm on wednesday,out_of_scope,0.861,False
+atis_flight,show me flights from milwaukee to orlando,out_of_scope,0.884,False
+atis_flight,i need information on flights from indianapolis to seattle,out_of_scope,0.851,False
+atis_flight,list the alaska airlines flights arriving in burbank,out_of_scope,0.82,False
+atis_abbreviation,what does m mean,out_of_scope,0.743,False
+atis_flight,list the flights on canadian airlines international,out_of_scope,0.84,False
+atis_ground_service,i need to rent a car in milwaukee,out_of_scope,0.749,False
+atis_flight,now show me one way flights from houston to boston,out_of_scope,0.893,False
+atis_flight,kansas city to las vegas economy,out_of_scope,0.76,False
+atis_flight,list flights from newark to boston daily,out_of_scope,0.88,False
+atis_flight,i need the flights from washington to montreal on a saturday,out_of_scope,0.867,False
+atis_flight,i'd like an evening flight from newark to los angeles,out_of_scope,0.825,False
+atis_flight,please list all the flights from kansas city to chicago on june sixteenth,out_of_scope,0.873,False
+atis_flight,please find a flight from ontario to westchester that makes a stop in chicago on may seventeenth one way with dinner,out_of_scope,0.815,False
+atis_flight,i would like flights from san francisco to long beach,out_of_scope,0.847,False
+atis_airline,what airline is hp,out_of_scope,0.797,True
+atis_abbreviation,what does ap 57 mean,informational,0.734,False
+atis_flight,i need a flight from salt lake to newark airport that arrives on saturday before 6 pm,out_of_scope,0.825,False
+atis_airfare,show me the cheapest round trip coach fare from las vegas to detroit,out_of_scope,0.893,False
+atis_flight,show me the flights between pittsburgh and washington dc,out_of_scope,0.888,False
+atis_flight,list all flights from memphis to miami,out_of_scope,0.882,False
+atis_flight,list flights from chicago to san diego,out_of_scope,0.87,False
+atis_airfare,what are the lowest fares from washington dc to salt lake city,out_of_scope,0.907,False
+atis_flight,now show me all round trip flights from burbank to seattle that arrive before 7 pm in seattle,out_of_scope,0.877,False
+atis_flight,list all flights on all types of aircraft arriving in denver between 8 and 9 pm,out_of_scope,0.869,False
+atis_flight,can i get a flight today from san francisco to detroit michigan,out_of_scope,0.85,False
+atis_flight,list the alaska airline flights from burbank to anywhere,out_of_scope,0.85,False
+atis_flight,list flights from la to orlando,out_of_scope,0.872,False
+atis_flight,could i have flight information on flights from salt lake city to phoenix please,out_of_scope,0.851,False
+atis_flight,what are the flights on sunday from montreal quebec to san diego california,out_of_scope,0.849,False
+atis_flight,monday morning flights from atlanta to kansas city,out_of_scope,0.85,False
+atis_flight,i want a flight from toronto to san diego,out_of_scope,0.845,False
+atis_flight,please find flights available from kansas city to newark,out_of_scope,0.876,False
+atis_flight,find me a flight that flies from memphis to tacoma,out_of_scope,0.845,False
+atis_airline,what airlines fly between detroit and westchester county,out_of_scope,0.848,False
+atis_flight,las vegas to baltimore economy,out_of_scope,0.805,False
+atis_flight,find flight from cincinnati to san jose on monday,out_of_scope,0.861,False
+atis_ground_service,is there ground transportation available at the denver airport,out_of_scope,0.875,False
+atis_airline,what airline is as,out_of_scope,0.845,True
+atis_flight,i need a friday flight from newark to tampa,out_of_scope,0.857,False
+atis_airfare,what is the most expensive one way fare between detroit and westchester county,out_of_scope,0.871,False
+atis_flight,what's the cheapest round trip flight on twa from columbus to st. paul,out_of_scope,0.91,False
+atis_flight,list the flights from pittsburgh to baltimore arriving on july first,out_of_scope,0.883,False
+atis_flight,which flights are available from tacoma to san jose in the morning on april twenty second,out_of_scope,0.883,False
+atis_flight,show flights from denver to houston,out_of_scope,0.916,False
+atis_flight,show me the flights in from minneapolis to indianapolis on tuesday afternoon,out_of_scope,0.901,False
+atis_flight,what flights arrive at love field on june sixth,out_of_scope,0.831,False
+atis_flight,i need a flight from memphis to tacoma that goes through los angeles,out_of_scope,0.813,False
+atis_airline,what airline is aa,out_of_scope,0.831,False
+atis_flight,i need information on flights between st. petersburg and charlotte,out_of_scope,0.858,False
+atis_flight,i'd like a flight from cincinnati to newark airport that arrives on saturday before 6 pm,out_of_scope,0.817,False
+atis_flight,i need flight information for a flight departing from indianapolis to cleveland departing tuesday at noon,out_of_scope,0.857,False
+atis_flight,i want to book a flight from salt lake city to westchester county,out_of_scope,0.837,False
+atis_flight,i'd like to fly from san diego to houston on june tenth,out_of_scope,0.821,False
+atis_flight,please list flights from san francisco to charlotte,out_of_scope,0.87,False
+atis_flight,i need a flight from salt lake city to phoenix departing wednesday after 5 pm,out_of_scope,0.828,False
+atis_flight,which flights depart from a atlanta and arrive in toronto,out_of_scope,0.897,False
+atis_flight,list the alaska airlines flights a departing from burbank,out_of_scope,0.841,False
+atis_flight,list flights from ontario california to orlando florida,out_of_scope,0.851,False
+atis_flight,show me all the flights from las vegas to new york city,out_of_scope,0.897,False
+atis_flight,i want to fly from nashville to seattle and i want the cheapest fare round trip,out_of_scope,0.86,False
+atis_flight,please find a flight from miami florida to las vegas nevada arriving before 4 o'clock pm,out_of_scope,0.832,False
+atis_flight,show me nonstop flights from kansas city to phoenix,out_of_scope,0.862,False
+atis_flight,how many northwest flights leave st. paul,out_of_scope,0.816,False
+atis_ground_service,is there ground transportation from lga into new york city,out_of_scope,0.869,False
+atis_flight,what are the flights from tacoma to san jose,out_of_scope,0.861,False
+atis_aircraft,determine the type of aircraft used on a flight from cleveland to dallas that leaves before noon,out_of_scope,0.821,False
+atis_airfare,list airfares for first class round trip from detroit to st. petersburg,out_of_scope,0.888,False
+atis_flight,i'd like to fly from cleveland to dallas,out_of_scope,0.839,False
+atis_airfare,show me round trip fares from toronto to detroit on delta northwest us air and united airlines,out_of_scope,0.897,False
+atis_flight,on sunday evening i would like to leave montreal quebec on a flight to san diego california,out_of_scope,0.806,False
+atis_flight,i would like to book a round trip flight from kansas city to chicago,out_of_scope,0.83,False
+atis_airfare,is there a fare from pittsburgh to cleveland under 200 dollars,out_of_scope,0.879,False
+atis_abbreviation,what is fare code m,out_of_scope,0.835,False

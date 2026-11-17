@@ -8,7 +8,7 @@ export function BrandMark({ size = "lg" }: Props) {
   return (
     <div
       aria-hidden="true"
-      className={`flex shrink-0 items-center justify-center rounded-full bg-brand font-bold italic tracking-tighter text-white ${sizing}`}
+      className={`flex shrink-0 items-center justify-center rounded-full bg-brand font-bold italic tracking-tighter text-on-brand ${sizing}`}
     >
       KQ
     </div>
