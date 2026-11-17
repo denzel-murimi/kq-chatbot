@@ -1,3 +1,4 @@
+import logging
 import os
 import uuid
 from contextlib import asynccontextmanager
@@ -64,6 +65,8 @@ class ChatResponse(BaseModel):
     sources: list[str] = []
 
 
+logger = logging.getLogger(__name__)
+
 pool: asyncpg.Pool | None = None
 
 
@@ -72,6 +75,15 @@ async def lifespan(app: FastAPI):
     global pool
     pool = await asyncpg.create_pool(os.environ["DATABASE_URL"], min_size=1, max_size=5, statement_cache_size=0)
     app.state.pool = pool  # admin routes read the pool from here
+    # Warm the router's example-embedding cache so the first chat request
+    # doesn't pay for embedding every example phrase. A failure here (e.g. Gemini
+    # unavailable) must not block startup: lru_cache doesn't cache exceptions, so
+    # the first request that needs the router simply retries.
+    from app.router import _example_vectors
+    try:
+        await asyncio.to_thread(_example_vectors)
+    except Exception:
+        logger.warning("Router cache warm-up failed; will retry on first request", exc_info=True)
     yield
     await pool.close()
 
@@ -122,12 +134,16 @@ async def chat(req: ChatRequest):
     t0 = time.perf_counter()
     timer = StageTimer()
     session_id = req.session_id or str(uuid.uuid4())
-    pending = await has_pending_request(pool, session_id)
+    with timer.track("pending_check"):
+        pending = await has_pending_request(pool, session_id)
 
     # Pleasantries are answered before the router runs: cheaper, and the
     # embedding router tends to misfile them as out-of-scope. Skipped mid-request,
     # where e.g. "no thanks" is the answer to "Would you like me to proceed?".
-    smalltalk_reply = None if pending else detect_smalltalk(req.message)
+    smalltalk_reply = None
+    if not pending:
+        with timer.track("smalltalk"):
+            smalltalk_reply = detect_smalltalk(req.message)
     if smalltalk_reply is not None:
         await analytics.log_query(
             pool,
@@ -135,6 +151,7 @@ async def chat(req: ChatRequest):
             route="smalltalk",
             message=req.message,
             latency_ms=int((time.perf_counter() - t0) * 1000),
+            timings=timer.as_dict(),
         )
         return ChatResponse(
             reply=smalltalk_reply,
