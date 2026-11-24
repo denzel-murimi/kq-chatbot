@@ -7,8 +7,6 @@ export type Message = {
   text: string;
   /** Set when a message is created in the browser. The greeting has none, which avoids a server/client time mismatch. */
   time?: string;
-  /** Document titles behind a grounded bot reply. Absent for user messages and fallbacks. */
-  sources?: string[];
 };
 
 const GREETING: Message = {
@@ -27,8 +25,8 @@ export function useChat() {
   const sessionId = useRef("");
   const inFlight = useRef(false); // a ref, not state: it must block a double-click within the same render
 
-  function add(role: Message["role"], text: string, sources?: string[]) {
-    const message: Message = { id: nextId.current++, role, text, time: timeNow(), sources };
+  function add(role: Message["role"], text: string) {
+    const message: Message = { id: nextId.current++, role, text, time: timeNow() };
     setMessages((prev) => [...prev, message]);
   }
 
@@ -51,13 +49,8 @@ export function useChat() {
     try {
       // One id per page load: a new page load starts a new, empty conversation.
       sessionId.current ||= crypto.randomUUID();
-      const { reply, grounded, sources } = await sendChatMessage(question, sessionId.current, history);
-      add(
-        "bot",
-        reply || "Sorry, I did not get an answer back. Please try again.",
-        // Only grounded answers cite documents; a fallback must never look sourced.
-        grounded && sources?.length ? sources : undefined,
-      );
+      const { reply } = await sendChatMessage(question, sessionId.current, history);
+      add("bot", reply || "Sorry, I did not get an answer back. Please try again.");
     } catch (error) {
       // The technical detail goes to the console; the passenger gets a plain sentence.
       console.error("Chat request failed:", error);

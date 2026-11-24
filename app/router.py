@@ -53,6 +53,14 @@ EXAMPLES: dict[str, list[str]] = {
         "Do I need a visa for my destination?",
         "What do I need to bring to the airport?",
         "What are the entry requirements for Kenya?",
+        # Arranging airline services. Contextualized follow-ups such as "Where can
+        # I book the unaccompanied minor service?" contain "book", which pulled them
+        # toward the flight_search exemplars. A passenger can book a service as
+        # well as a flight; these balance that.
+        "How do I arrange the unaccompanied minor service?",
+        "Where do I request wheelchair assistance?",
+        "How do I book special assistance for my trip?",
+        "How do I request a bassinet or special meal?",
     ],
     "transactional": [
         "I want to change my seat on my booking.",

@@ -76,7 +76,7 @@ export function Sidebar({ active, onChange }: NavProps) {
           <Sparkles size={16} className="text-brand-ink" aria-hidden="true" /> AI Assistant
         </p>
         <p className="mt-1 text-sm leading-snug text-ink-3">
-          Answers come from Kenya Airways policy documents, with sources shown.
+          Answers come from Kenya Airways policy documents.
         </p>
       </div>
     </aside>

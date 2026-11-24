@@ -64,6 +64,8 @@ async def stage_latencies(pool) -> dict:
         raw = r["timings"]
         data = json.loads(raw) if isinstance(raw, str) else (raw or {})
         for k, v in data.items():
+            if k == "query":  # the contextualized query text, not a stage time
+                continue
             try:
                 sums[k] = sums.get(k, 0) + int(v)
                 counts[k] = counts.get(k, 0) + 1
