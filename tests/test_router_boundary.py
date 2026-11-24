@@ -44,6 +44,11 @@ PARAPHRASES = [
     ("Can I move my flight to Friday?", "informational"),
     ("What do I need to bring for my flight to London?", "informational"),
     ("How early should I be at the airport for my flight?", "informational"),
+    # Arranging a service is informational, even though "book"/"get" also
+    # appear in flight-search wording.
+    ("Where can I get the unaccompanied minor service?", "informational"),
+    ("How do I sign my child up to travel alone?", "informational"),
+    ("Who do I contact to get help at the airport for my mother?", "informational"),
     ("Is there a flight from Nairobi to Mombasa tomorrow?", "out_of_scope"),
     ("How much is a ticket to Dubai?", "out_of_scope"),
 ]

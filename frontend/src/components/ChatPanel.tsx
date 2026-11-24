@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp, FileText, Sparkles, X } from "lucide-react";
+import { ArrowUp, Sparkles, X } from "lucide-react";
 import type { Message } from "@/hooks/useChat";
 import { BrandMark } from "./BrandMark";
 
@@ -63,22 +63,6 @@ function MessageBubble({ message }: { message: Message }) {
           <p className="whitespace-pre-wrap">
             <FormattedText text={message.text} />
           </p>
-          {message.sources && message.sources.length > 0 && (
-            <div className="mt-3 border-t border-line pt-2.5">
-              <p className="mb-1.5 text-xs font-bold uppercase tracking-wider text-ink-3">Sources</p>
-              <ul className="flex flex-wrap gap-1.5">
-                {message.sources.map((s) => (
-                  <li
-                    key={s}
-                    className="inline-flex items-center gap-1 rounded-md bg-surface-2 px-2 py-1 text-xs font-semibold text-ink-2"
-                  >
-                    <FileText size={12} aria-hidden="true" />
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
       </div>
     </div>

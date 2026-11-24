@@ -73,7 +73,12 @@ pool: asyncpg.Pool | None = None
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global pool
-    pool = await asyncpg.create_pool(os.environ["DATABASE_URL"], min_size=1, max_size=5, statement_cache_size=0)
+    # min_size=3 keeps connections open so a request rarely pays the ~1.3 s cost of
+    # opening one. statement_cache_size must stay 0: DATABASE_URL points at
+    # Supabase's transaction-mode pooler (port 6543), which doesn't keep prepared
+    # statements between transactions; with the cache on, concurrent queries fail
+    # with "prepared statement __asyncpg_stmt_N__ does not exist".
+    pool = await asyncpg.create_pool(os.environ["DATABASE_URL"], min_size=3, max_size=5, statement_cache_size=0)
     app.state.pool = pool  # admin routes read the pool from here
     # Warm the router's example-embedding cache so the first chat request
     # doesn't pay for embedding every example phrase. A failure here (e.g. Gemini
@@ -221,6 +226,13 @@ async def chat(req: ChatRequest):
 
     latency_ms = int((time.perf_counter() - t0) * 1000)
 
+    # Record what the contextualizer produced next to the original message, so a
+    # bad rewrite can be diagnosed from query_logs. Not a stage time: stage_latencies
+    # skips this key.
+    timings = timer.as_dict()
+    if not pending:
+        timings["query"] = query
+
     await analytics.log_query(
         pool,
         session_id=session_id,
@@ -230,7 +242,7 @@ async def chat(req: ChatRequest):
         grounded=grounded,
         top_similarity=top_similarity,
         outcome=outcome,
-        timings=timer.as_dict(),
+        timings=timings,
     )
 
     return ChatResponse(

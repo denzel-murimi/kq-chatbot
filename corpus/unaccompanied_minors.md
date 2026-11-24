@@ -10,8 +10,12 @@ Young travellers aged 15 to 17 may also use the unaccompanied minor service if a
 ## Fees
 A service fee applies to unaccompanied minors. The fee is waived for domestic travel within Kenya on routes between Nairobi (NBO), Mombasa (MBA) and Kisumu (KIS). The exact current charge should be confirmed with Kenya Airways when booking.
 
-## How to book
-The service is arranged by completing the Unaccompanied Minor Form, which records the child's details, the guardians dropping the child off, and the person designated to collect the child. A dedicated Kenya Airways team handles the booking. Members of the KOOLFLYERS student programme should present their membership card.
+## How to arrange the service and get the form
+To get the Unaccompanied Minor Form and book the service, contact the Kenya Airways Customer Excellence Center, which is open 24 hours, by phone on +254 734 104 747, mobile on +254 711 024 747 or WhatsApp on +254 705 474 747. You can also request the form when you book your ticket.
+
+The unaccompanied minor service is arranged by completing the Unaccompanied Minor Form, which records the child's details, the guardians dropping the child off, and the person designated to collect the child. A dedicated Kenya Airways team then provides the form and handles the booking.
+
+Members of the KOOLFLYERS student programme should present their membership card.
 
 ## Flights where it is available
 The unaccompanied minor service is available only on flights operated by Kenya Airways, not on partner or codeshare flights. Overnight connections are not permitted, and routes with no stops or the fewest connections are preferred. Where a child continues on a domestic flight with another airline on a separate ticket, the service ends at the international airport.
