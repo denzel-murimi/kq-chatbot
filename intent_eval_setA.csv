@@ -1,0 +1,97 @@
+message,expected_route,got_route,route_correct,expected_subintent,got_subintent,subintent_correct,biased,score_informational,score_transactional,score_out_of_scope
+How many kilos can I check in on an economy ticket?,informational,informational,True,,,,False,0.954,0.793,0.796
+What size of carry-on bag is allowed?,informational,informational,True,,,,False,0.932,0.776,0.758
+Is a laptop bag counted as part of my hand luggage?,informational,informational,True,,,,False,0.887,0.78,0.732
+How long before departure does the check-in counter close?,informational,informational,True,,,,False,0.887,0.812,0.782
+Can I check in online the day before I fly?,informational,informational,True,,,,False,0.891,0.843,0.759
+Am I allowed to pack a lighter in my suitcase?,informational,informational,True,,,,False,0.833,0.765,0.733
+Can I carry perfume in my hand luggage?,informational,informational,True,,,,False,0.879,0.772,0.738
+Does Kenya Airways allow cats on board?,informational,informational,True,,,,False,0.878,0.786,0.797
+Can a guide dog travel with a blind passenger?,informational,informational,True,,,,False,0.866,0.737,0.751
+"My daughter is 12, does she need an escort to fly alone?",informational,informational,True,,,,False,0.852,0.783,0.758
+What does the unaccompanied minor service cost?,informational,informational,True,,,,False,0.91,0.749,0.807
+"My grandmother uses a wheelchair, what help is available?",informational,informational,True,,,,False,0.867,0.725,0.77
+Can I bring my own mobility scooter?,informational,informational,True,,,,False,0.799,0.712,0.737
+Do babies get their own seat or sit on my lap?,informational,informational,True,,,,False,0.835,0.759,0.743
+Can I request a cot for my infant on a long flight?,informational,informational,True,,,,False,0.881,0.777,0.767
+"I had an operation last week, can I still fly?",informational,informational,True,,,,True,0.806,0.823,0.763
+Is there a form my doctor needs to fill before I travel?,informational,informational,True,,,,False,0.877,0.766,0.783
+"I'm 30 weeks pregnant, will I be allowed to board?",informational,informational,True,,,,False,0.812,0.798,0.759
+What paperwork do I need to enter Kenya?,informational,informational,True,,,,False,0.948,0.74,0.809
+Is a transit visa needed when connecting through Nairobi?,informational,informational,True,,,,False,0.991,0.779,0.819
+What are the charges for changing my travel date?,informational,informational,True,,,,False,0.901,0.788,0.799
+"If I cancel my ticket, how long does the refund take?",informational,informational,True,,,,False,0.851,0.786,0.768
+Do I have to pay to pick a seat in advance?,informational,informational,True,,,,False,0.827,0.758,0.732
+Who is allowed to sit in the emergency exit row?,informational,informational,True,,,,False,0.791,0.77,0.725
+What happens if my suitcase is over the weight limit?,informational,informational,True,,,,False,0.842,0.763,0.737
+Can I take my golf clubs as checked baggage?,informational,informational,True,,,,False,0.847,0.769,0.744
+"My luggage arrived damaged, how do I report it?",informational,informational,True,,,,False,0.912,0.806,0.776
+How do I trace a bag that didn't arrive?,informational,informational,True,,,,False,0.908,0.844,0.758
+Can I carry a power bank in checked luggage?,informational,informational,True,,,,False,0.876,0.771,0.74
+Are e-cigarettes allowed on the plane?,informational,informational,True,,,,False,0.831,0.799,0.764
+How do I request a vegetarian meal?,informational,informational,True,,,,False,0.868,0.735,0.786
+How can I contact Kenya Airways customer care?,informational,informational,True,,,,False,0.782,0.763,0.76
+Is my flight still leaving on time today?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.83,0.932,0.833
+Can you tell me if my flight to London is delayed?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.831,0.919,0.822
+What's the current status of booking ABC123?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.8,0.909,0.75
+Has my flight tomorrow been cancelled?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.816,0.917,0.814
+Please check my booking for me,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.798,0.9,0.78
+When does my flight depart? Reference RT9K3L,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.83,0.874,0.84
+Is KQ 100 on schedule?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.763,0.869,0.759
+I'd like an update on my flight,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.816,0.951,0.815
+"Look up my reservation, surname Doe",transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.761,0.883,0.77
+Is my Nairobi to Dubai flight running late?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.823,0.9,0.858
+Can you confirm my flight details?,transactional,informational,False,check_flight_status,check_flight_status,True,True,0.868,0.891,0.784
+What time does my plane take off?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.859,0.892,0.854
+Has my flight been rescheduled?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.862,0.917,0.812
+Give me the latest on my booking,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.8,0.871,0.764
+Am I checked in for my flight?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.861,0.921,0.786
+Is there any delay on my booked flight?,transactional,transactional,True,check_flight_status,check_flight_status,True,False,0.852,0.944,0.825
+I want to change my seat,transactional,transactional,True,change_seat,change_seat,True,False,0.785,0.924,0.76
+Please move me to seat 14C,transactional,transactional,True,change_seat,change_seat,True,False,0.768,0.916,0.757
+Can I switch to an aisle seat on my booking?,transactional,transactional,True,change_seat,change_seat,True,False,0.832,0.9,0.744
+Put me in a window seat please,transactional,transactional,True,change_seat,change_seat,True,False,0.777,0.962,0.78
+I'd like a different seat on my flight,transactional,transactional,True,change_seat,change_seat,True,False,0.83,0.93,0.78
+Can you reassign my seat to 22A?,transactional,transactional,True,change_seat,change_seat,True,False,0.808,0.9,0.728
+"I'm not happy with my seat, can I swap it?",transactional,transactional,True,change_seat,change_seat,True,False,0.8,0.88,0.721
+Change my seat on booking RT9K3L to 3D,transactional,transactional,True,change_seat,change_seat,True,False,0.784,0.946,0.728
+Move me closer to the front of the plane,transactional,transactional,True,change_seat,change_seat,True,False,0.742,0.906,0.764
+Can I sit by the window instead?,transactional,transactional,True,change_seat,change_seat,True,False,0.785,0.904,0.739
+I need to swap seats so I can sit with my son,transactional,transactional,True,change_seat,change_seat,True,False,0.762,0.881,0.753
+Upgrade my seat to an exit row seat,transactional,transactional,True,change_seat,change_seat,True,False,0.768,0.891,0.751
+Can you move me to 9F?,transactional,transactional,True,change_seat,change_seat,True,False,0.756,0.854,0.781
+"I'd rather have an aisle, can you change it?",transactional,transactional,True,change_seat,change_seat,True,False,0.771,0.884,0.719
+Book me a different seat on KQ 101,transactional,transactional,True,change_seat,change_seat,True,False,0.787,0.902,0.76
+Can I pick another seat for my flight?,transactional,informational,False,change_seat,change_seat,True,True,0.89,0.898,0.77
+Are there any flights from Nairobi to Kisumu on Friday?,out_of_scope,out_of_scope,True,,,,False,0.822,0.831,0.963
+How much is a return ticket to Lagos?,out_of_scope,out_of_scope,True,,,,False,0.804,0.773,0.87
+Find me the cheapest flight to Johannesburg next week,out_of_scope,out_of_scope,True,,,,False,0.764,0.8,0.878
+Book me a flight to Zanzibar for the weekend,out_of_scope,out_of_scope,True,,,,False,0.771,0.829,0.863
+Which airlines fly from Mombasa to Dar es Salaam?,out_of_scope,out_of_scope,True,,,,False,0.783,0.767,0.941
+Show me flights to Paris in December,out_of_scope,out_of_scope,True,,,,False,0.775,0.806,0.87
+What's the fare for a business class ticket to Dubai?,out_of_scope,out_of_scope,True,,,,False,0.797,0.793,0.87
+Is there a direct flight from Nairobi to New York?,out_of_scope,out_of_scope,True,,,,False,0.854,0.811,0.867
+Recommend a hotel near JKIA,out_of_scope,out_of_scope,True,,,,False,0.757,0.719,0.826
+Can you book me a taxi from the airport?,out_of_scope,out_of_scope,True,,,,False,0.795,0.772,0.889
+Where can I hire a car in Mombasa?,out_of_scope,out_of_scope,True,,,,False,0.759,0.698,0.782
+What's the weather like in Kisumu today?,out_of_scope,out_of_scope,True,,,,False,0.726,0.729,0.848
+What is the dollar to shilling exchange rate?,out_of_scope,out_of_scope,True,,,,False,0.749,0.685,0.757
+Who won the Premier League last season?,out_of_scope,out_of_scope,True,,,,False,0.704,0.707,0.853
+Tell me a funny joke,out_of_scope,out_of_scope,True,,,,False,0.678,0.702,0.986
+Write me a short poem about the sea,out_of_scope,out_of_scope,True,,,,False,0.693,0.707,0.719
+What is the capital of Australia?,out_of_scope,out_of_scope,True,,,,False,0.713,0.669,0.858
+Help me fix my Python code,out_of_scope,out_of_scope,True,,,,False,0.718,0.724,0.807
+Translate good morning into French,out_of_scope,out_of_scope,True,,,,False,0.709,0.713,0.732
+"What's 15 percent of 2,400?",out_of_scope,out_of_scope,True,,,,False,0.714,0.682,0.727
+What time is it in London right now?,out_of_scope,out_of_scope,True,,,,False,0.722,0.737,0.912
+Recommend a good restaurant in Westlands,out_of_scope,out_of_scope,True,,,,False,0.725,0.679,0.853
+What's the latest news in Kenya?,out_of_scope,out_of_scope,True,,,,False,0.816,0.738,0.867
+How do I renew my Kenyan passport?,out_of_scope,out_of_scope,True,,,,False,0.853,0.725,0.915
+Can you order me food?,out_of_scope,out_of_scope,True,,,,False,0.784,0.721,0.931
+What are the best tourist spots in Mombasa?,out_of_scope,out_of_scope,True,,,,False,0.783,0.693,0.83
+Are there cheap flights to Entebbe this month?,out_of_scope,out_of_scope,True,,,,False,0.775,0.787,0.871
+List flights from Nairobi to Accra,out_of_scope,out_of_scope,True,,,,False,0.784,0.783,0.86
+Do any planes go to Cape Town on Sunday?,out_of_scope,out_of_scope,True,,,,False,0.784,0.825,0.866
+What's the price of a ticket from Kisumu to Nairobi?,out_of_scope,out_of_scope,True,,,,False,0.802,0.781,0.865
+Give me the share price of Kenya Airways,out_of_scope,out_of_scope,True,,,,False,0.772,0.761,0.816
+Can you help me write a CV?,out_of_scope,out_of_scope,True,,,,False,0.759,0.722,0.828

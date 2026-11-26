@@ -61,10 +61,22 @@ INTENT_LABELS = {
 }
 
 
+# Seating vocabulary: words that only make sense when the passenger is talking
+# about where they sit, plus explicit "move/switch/put me" relocation requests.
+_SEATING_VOCAB_RE = re.compile(
+    r"\b(seats?|seating|sit|sitting|window|aisle|leg\s?room|exit\s+rows?)\b"
+    r"|\b(move|switch|put)\s+me\b",
+    re.IGNORECASE,
+)
+
+
 def classify_transactional_intent(message: str) -> str:
-    """Pick the specific transactional intent. Deterministic keyword rule: a
-    mention of a seat is a seat change, otherwise it is a status check."""
-    return "change_seat" if "seat" in message.lower() else "check_flight_status"
+    """Pick the specific transactional intent. Deterministic rule: a seat number
+    (same pattern the slot extractor uses) or seating vocabulary means a seat
+    change; anything else is a status check."""
+    if "seat_number" in extract_structured(message) or _SEATING_VOCAB_RE.search(message):
+        return "change_seat"
+    return "check_flight_status"
 
 
 async def _get_session(db, session_id: str) -> dict:

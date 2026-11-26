@@ -61,6 +61,14 @@ EXAMPLES: dict[str, list[str]] = {
         "Where do I request wheelchair assistance?",
         "How do I book special assistance for my trip?",
         "How do I request a bassinet or special meal?",
+        # Baggage claims: lost, delayed and damaged bags are covered by the
+        # baggage policy, and "my bag" wording otherwise drifts toward the
+        # booking exemplars.
+        "What should I do if my checked bag is lost?",
+        "My suitcase didn't arrive on my flight, how do I file a claim?",
+        "How long does it take to find a delayed bag?",
+        "Can I claim compensation for a broken suitcase?",
+        "Where do I report missing luggage at the airport?",
     ],
     "transactional": [
         "I want to change my seat on my booking.",
@@ -85,6 +93,18 @@ EXAMPLES: dict[str, list[str]] = {
         "Can you help with my homework?",
         "What time is it right now?",
         "is there ground transportation in oakland",
+        # Travel-adjacent services the airline doesn't provide. Without these,
+        # "hotel near the airport" or "taxi from the airport" scored closer to
+        # travel policy than to the generic off-topic examples above.
+        "Can you reserve a hotel room for my stay?",
+        "I need an airport transfer to my hotel",
+        "Call me a cab to the city centre",
+        "Where is a good place to eat dinner tonight?",
+        "Can you get food delivered to my house?",
+        "What sightseeing tours are available on safari?",
+        "What are today's top headlines?",
+        "How do I apply for a new passport?",
+        "Where do I get a national ID card replaced?",
     ],
     # Flight search, fares and new bookings: also out of scope, but these
     # passengers get a reply pointing them to kenya-airways.com and the KQ app.
